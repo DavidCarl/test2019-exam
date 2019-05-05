@@ -23,7 +23,6 @@ jobs:
     steps:
       - checkout
           #path: ~/test2019-exam/backend
-      - run: cd backend
       - run: pwd
       - run: ls -all
 
