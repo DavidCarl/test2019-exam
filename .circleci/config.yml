@@ -13,7 +13,7 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
-    - run: ls -all
+
     working_directory: ~/test2019-exam/backend
 
     environment:
@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - checkout
-
+	path ~/test2019-exam
       # Download and cache dependencies
       - restore_cache:
           keys:
