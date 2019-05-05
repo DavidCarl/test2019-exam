@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - checkout
-          path ~/test2019-exam
+          run ls -all
       # Download and cache dependencies
       - restore_cache:
           keys:
