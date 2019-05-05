@@ -79,6 +79,13 @@ public class Teacher {
         return false;
     }
 
+    public boolean isEligible(){
+        // a teacher should have a proper education background and hours/courses shouldn't
+        // exceed their maximum specifications
+
+        return true;
+    }
+
     @Override
     public String toString() {
         return "Teacher{" +
