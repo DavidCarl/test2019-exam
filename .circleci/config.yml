@@ -24,6 +24,7 @@ jobs:
       - checkout
       # Download and cache dependencies
       - restore_cache:
+          path: ~/test2019-exam/backend
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
             # fallback to using the latest cache if no exact match is found
