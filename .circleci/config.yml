@@ -23,8 +23,9 @@ jobs:
     steps:
       - checkout
           #path: ~/test2019-exam/backend
-      - run: pwd
-      - run: ls -all
+      - run: cd ./backend
+#      - run: pwd
+#      - run: ls -all
 
 #      - checkout
       # Download and cache dependencies
