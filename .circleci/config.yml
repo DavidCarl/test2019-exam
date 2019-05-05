@@ -21,10 +21,11 @@ jobs:
       MAVEN_OPTS: -Xmx3200m
 
     steps:
+      - checkout
       - run: pwd
       - run: ls -all
 
-      - checkout
+#      - checkout
       # Download and cache dependencies
       - restore_cache:
           keys:
