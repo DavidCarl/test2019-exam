@@ -6,7 +6,7 @@ public class Teacher {
     private String eduBackground;
 
     //Course related information
-    private String[] teachingCourses = new String[3];
+    private Course[] teachingCourses = new Course[3];
     private int psTeaching = 0; //Previous Semester Teaching
 
     public Teacher(String name, String eduBackground) {
@@ -14,11 +14,11 @@ public class Teacher {
         this.eduBackground = eduBackground;
     }
 
-    public String[] getTeachingCourses() {
+    public Course[] getTeachingCourses() {
         return teachingCourses;
     }
 
-    public boolean addCourse(String courseName){
+    public boolean addCourse(Course course){
         boolean spotsLeft = false;
         int spot = -1;
         for (int i = 0; i < teachingCourses.length; i++) {
@@ -30,22 +30,22 @@ public class Teacher {
         }
         if(spotsLeft == false){
             System.out.println("Debug: No spot left for this teacher!");
-            System.out.println("Debug: You tried to add " + courseName);
+            System.out.println("Debug: You tried to add " + course);
             for (int j = 0; j < teachingCourses.length; j++) {
-                System.out.println("Debug: Current course " + j + " " + teachingCourses[j]);
+                System.out.println("Debug: Current course " + j + " " + teachingCourses[j].getName());
             }
             System.out.println();
             return false;
         }
-        teachingCourses[spot] = courseName;
+        teachingCourses[spot] = course;
         return true;
     }
 
-    public boolean removeCourse(String courseName){
+    public boolean removeCourse(Course course){
         boolean found = false;
         int spot = -1;
         for (int i = 0; i < teachingCourses.length; i++) {
-            if(teachingCourses[i] == courseName){
+            if(teachingCourses[i] == course){
                 found = true;
                 spot = i;
             }

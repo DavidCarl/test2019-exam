@@ -23,7 +23,8 @@ public class Topic {
         Course newCourse = new Course(name, teacher, roomNr);
         courses.put(name.toLowerCase(), newCourse);
         // ex: TopicName.CourseName
-        teacher.addCourse(_name + "." + name);
+        //teacher.addCourse(_name + "." + name);
+        teacher.addCourse(newCourse);
         return true;
     }
 

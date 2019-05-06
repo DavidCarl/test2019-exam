@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TopicTests {
+public class TopicTest {
     TopicRepository topics;
 
     @BeforeEach

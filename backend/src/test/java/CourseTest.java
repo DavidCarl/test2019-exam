@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
-public class CourseTests {
+public class CourseTest {
     Topic topic;
 
     @BeforeEach
