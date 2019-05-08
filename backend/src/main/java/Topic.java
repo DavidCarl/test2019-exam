@@ -16,11 +16,11 @@ public class Topic {
         return _name;
     }
 
-    public boolean addCourse(String name, Teacher teacher, String roomNr) {
-        if(courses.containsKey(name.toLowerCase()) || !teacher.isEligible())
+    public boolean addCourse(String name, Teacher teacher, String roomNr, int price) {
+        if(courses.containsKey(name.toLowerCase()) || !teacher.isEligible() || price < 0)
             return false;
 
-        Course newCourse = new Course(name, teacher, roomNr);
+        Course newCourse = new Course(name, teacher, roomNr, price);
         courses.put(name.toLowerCase(), newCourse);
         // ex: TopicName.CourseName
         teacher.addCourse(_name + "." + name);
