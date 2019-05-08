@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 public class Course {
+    private static final int _MAXSTUDENTS = 20;
 
     private String _name;
     private Teacher _teacher;
@@ -41,10 +42,30 @@ public class Course {
         if(_coursePayments.containsKey(student.getEmail()))
             throw new IllegalStateException("Student already enrolled");
 
+        if(_coursePayments.size() >= _MAXSTUDENTS)
+            throw new IndexOutOfBoundsException();
+
         if(student.getAge() < 18)
             throw new IllegalStateException("Student is a minor");
 
         _coursePayments.put(student.getEmail(), 0);
     }
 
+    public int acceptPayment(Student student, int payment){
+        if(!_coursePayments.containsKey(student.getEmail()))
+            throw new NoSuchElementException();
+
+        if(payment <= 0)
+            throw new IllegalArgumentException("Payment cannot be 0 or less");
+
+        int currentPayment = _coursePayments.get(student.getEmail());
+        int leftover = _price - (currentPayment + payment);
+
+        if(leftover <= 0)
+            _coursePayments.put(student.getEmail(), _price);
+        else
+            _coursePayments.put(student.getEmail(), currentPayment + payment);
+
+        return leftover * -1;
+    }
 }
