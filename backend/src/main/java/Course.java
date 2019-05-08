@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 public class Course {
+    private static final int _MAXSTUDENTS = 20;
 
     private String _name;
     private Teacher _teacher;
@@ -40,6 +41,9 @@ public class Course {
     public void enroll(Student student){
         if(_coursePayments.containsKey(student.getEmail()))
             throw new IllegalStateException("Student already enrolled");
+
+        if(_coursePayments.size() >= _MAXSTUDENTS)
+            throw new IndexOutOfBoundsException();
 
         if(student.getAge() < 18)
             throw new IllegalStateException("Student is a minor");

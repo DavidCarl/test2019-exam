@@ -131,11 +131,10 @@ public class CourseTest {
     void shouldThrowExceptionIfStudentAlreadyEnrolled(){
         Student student = main.registerStudent("Betty", "Smith", "13-09-1998", "bettysmith@gmail.com");
 
-        Course french = topic.getCourse("French");
-        french.enroll(student);
+        topic.enrollToCourse("French", student);
 
         assertThrows(IllegalStateException.class, () -> {
-            french.enroll(student);
+            topic.enrollToCourse("French", student);
         });
     }
 
@@ -143,10 +142,8 @@ public class CourseTest {
     void shouldNotThrowExceptionIfStudentIsNotEnrolled(){
         Student student = main.registerStudent("Betty", "Smith", "13-09-1998", "bettysmith@gmail.com");
 
-        Course french = topic.getCourse("French");
-
         assertDoesNotThrow(() -> {
-            french.enroll(student);
+            topic.enrollToCourse("French", student);
         });
     }
 
@@ -154,12 +151,10 @@ public class CourseTest {
     void shouldThrowExceptionIfEnrollingStudentIsMinor(){
         Student student = main.registerStudent("Tom", "Jonsen", "13-04-2002", "tjonsen@gmail.com");
 
-        Course french = topic.getCourse("French");
-
         assertAll("Test illegible age of enrolling student",
                 () -> assertEquals(17, student.getAge()),
                 () -> assertThrows(IllegalStateException.class, () -> {
-                    french.enroll(student);
+                    topic.enrollToCourse("French", student);
                 })
         );
     }
@@ -168,12 +163,10 @@ public class CourseTest {
     void shouldNotThrowExceptionIfEnrollingStudentIsNotMinor(){
         Student student = main.registerStudent("Teddy", "Jones", "31-01-2001", "teddy96@gmail.com");
 
-        Course french = topic.getCourse("French");
-
         assertAll("Test allowed age of enrolling student",
                 () -> assertEquals(18, student.getAge()),
                 () -> assertDoesNotThrow(() -> {
-                    french.enroll(student);
+                    topic.enrollToCourse("French", student);
                 })
         );
     }
@@ -183,7 +176,7 @@ public class CourseTest {
         Student student = main.registerStudent("Teddy", "Jones", "31-01-2001", "teddy96@gmail.com");
 
         Course french = topic.getCourse("French");
-        french.enroll(student);
+        topic.enrollToCourse(french.getName(), student);
 
         assertTrue(french.getCoursePayments().containsKey(student.getEmail()));
     }
@@ -193,7 +186,7 @@ public class CourseTest {
         Student student = main.registerStudent("Teddy", "Jones", "31-01-2001", "teddy96@gmail.com");
 
         Course french = topic.getCourse("French");
-        french.enroll(student);
+        topic.enrollToCourse(french.getName(), student);
 
         assertEquals(0, french.getCoursePayments().get(student.getEmail()));
     }
@@ -212,7 +205,7 @@ public class CourseTest {
         Student enrolled = main.registerStudent("Anna", "Enrolled", "13-09-2000", "annaunenr@gmail.com");
 
         Course french = topic.getCourse("French");
-        french.enroll(enrolled);
+        topic.enrollToCourse(french.getName(), enrolled);
 
         assertThrows(IllegalArgumentException.class, () -> {
             french.acceptPayment(enrolled, 0);
@@ -230,7 +223,7 @@ public class CourseTest {
 
         Student student = main.registerStudent("Sara", "Jackson", "25-03-1999", "sara99@gmail.com");
 
-        chinese.enroll(student);
+        topic.enrollToCourse(chinese.getName(), student);
 
         assertAll("Test positive returned price",
                 () -> assertEquals(150, chinese.acceptPayment(student, 350)),
@@ -249,11 +242,41 @@ public class CourseTest {
 
         Student student = main.registerStudent("Sara", "Jackson", "25-03-1999", "sara99@gmail.com");
 
-        chinese.enroll(student);
+        topic.enrollToCourse(chinese.getName(), student);
 
         assertAll("Test positive returned price",
                 () -> assertEquals(-50, chinese.acceptPayment(student, 150)),
                 () -> assertTrue(chinese.acceptPayment(student, 10) < 0)
         );
+    }
+
+    @Test
+    void shouldCreateNewCourseIfMaxStudentsReached(){
+        for(int i = 0; i < 20; i++){
+            Student student = main.registerStudent("Sara" + i, "Jackson", "25-03-1999", "sara99" + i + "@gmail.com");
+            topic.enrollToCourse("French", student);
+        }
+
+        Student jane = main.registerStudent("Jane", "Jackson", "25-03-1999", "jaja@gmail.com");
+
+        topic.enrollToCourse("French", jane);
+
+        assertNotNull(topic.getCourse("French I"));
+    }
+
+    @Test
+    void shouldThrowExceptionIfStudentLimitPassed(){
+        Course french = topic.getCourse("French");
+
+        for(int i = 0; i < 20; i++){
+            Student student = main.registerStudent("Sara" + i, "Jackson", "25-03-1999", "sara99" + i + "@gmail.com");
+            topic.enrollToCourse(french.getName(), student);
+        }
+
+        Student jane = main.registerStudent("Jane", "Jackson", "25-03-1999", "jaja@gmail.com");
+        assertThrows(IndexOutOfBoundsException.class, () ->
+        {
+            french.enroll(jane);
+        });
     }
 }

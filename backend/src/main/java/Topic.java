@@ -44,4 +44,20 @@ public class Topic {
         else
             throw new NoSuchElementException();
     }
+
+    public void enrollToCourse(String courseName, Student student)
+    {
+        Course course = getCourse(courseName);
+        try
+        {
+            course.enroll(student);
+        }
+        catch (IndexOutOfBoundsException exception)
+        {
+            String newCourseName = courseName + " I";
+            addCourse(newCourseName,course.getTeacher(),course.getRoomNr()+1,course.getCoursePrice());
+
+            enrollToCourse(newCourseName, student);
+        }
+    }
 }
