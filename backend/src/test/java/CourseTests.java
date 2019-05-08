@@ -16,7 +16,7 @@ public class CourseTests {
 
         Teacher mockedTeacher1 = mock(Teacher.class);
         when(mockedTeacher1.isEligible()).thenReturn(true);
-        topic.addCourse("French", mockedTeacher1, "107");
+        topic.addCourse("French", mockedTeacher1, "107", 100);
     }
 
     //Test if we can successfully add a course
@@ -27,7 +27,7 @@ public class CourseTests {
 
         when(mockedTeacher.isEligible()).thenReturn(true);
 
-        topic.addCourse("English", mockedTeacher, "203");
+        topic.addCourse("English", mockedTeacher, "203", 100);
 
         assertEquals(2, topic.getCourses().size());
     }
@@ -39,7 +39,7 @@ public class CourseTests {
 
         when(mockedTeacher.isEligible()).thenReturn(false);
 
-        boolean addedCourse = topic.addCourse("English", mockedTeacher, "203");
+        boolean addedCourse = topic.addCourse("English", mockedTeacher, "203", 200);
 
         assertFalse(addedCourse);
     }
@@ -50,8 +50,8 @@ public class CourseTests {
 
         when(mockedTeacher.isEligible()).thenReturn(true);
 
-        topic.addCourse("English", mockedTeacher, "203");
-        boolean addedCourse = topic.addCourse("eNGliSH", mockedTeacher, "203");
+        topic.addCourse("English", mockedTeacher, "203", 150);
+        boolean addedCourse = topic.addCourse("eNGliSH", mockedTeacher, "203", 150);
 
         assertFalse(addedCourse);
     }
@@ -103,5 +103,88 @@ public class CourseTests {
         topic.deleteCourse("FreNCH");
 
         assertEquals(currentCoursesSize - 1 , topic.getCourses().size());
+    }
+
+    @Test
+    void shouldThrowExceptionIfStudentAlreadyEnrolled(){
+        Student student = main.registerStudent("Betty", "Smith", "13-09-1998", "bettysmith@gmail.com");
+
+        Course french = topic.getCourse("French");
+        french.enroll(student);
+
+        assertThrows(IllegalStateException.class, () -> {
+            french.enroll(student);
+        });
+    }
+
+    @Test
+    void shouldNotThrowExceptionIfStudentIsNotEnrolled(){
+        Student student = main.registerStudent("Betty", "Smith", "13-09-1998", "bettysmith@gmail.com");
+
+        Course french = topic.getCourse("French");
+
+        assertDoesNotThrow(() -> {
+            french.enroll(student);
+        });
+    }
+
+    @Test
+    void shouldThrowExceptionIfEnrollingStudentIsMinor(){
+        Student student = main.registerStudent("Tom", "Jonsen", "13-04-2002", "tjonsen@gmail.com");
+
+        Course french = topic.getCourse("French");
+
+        assertAll("Test illegible age of enrolling student",
+                () -> assertEquals(17, student.getAge()),
+                () -> assertThrows(IllegalStateException.class, () -> {
+                    french.enroll(student);
+                })
+        );
+    }
+
+    @Test
+    void shouldNotThrowExceptionIfEnrollingStudentIsNotMinor(){
+        Student student = main.registerStudent("Teddy", "Jones", "31-01-2001", "teddy96@gmail.com");
+
+        Course french = topic.getCourse("French");
+
+        assertAll("Test allowed age of enrolling student",
+                () -> assertEquals(18, student.getAge()),
+                () -> assertDoesNotThrow(() -> {
+                    french.enroll(student);
+                })
+        );
+    }
+
+    @Test
+    void studentShouldBeInCourseEnrollmentsList(){
+        Student student = main.registerStudent("Teddy", "Jones", "31-01-2001", "teddy96@gmail.com");
+
+        Course french = topic.getCourse("French");
+
+        assertAll("Test enrolling student",
+                () -> assertEquals(18, student.getAge()),
+                () -> assertDoesNotThrow(() -> {
+                    french.enroll(student);
+                })
+        );
+
+        assertTrue(french.getCoursePayments().containsKey(student.getEmail()));
+    }
+
+    @Test
+    void studentInitialPaymentIsZeroWhenEnrolling(){
+        Student student = main.registerStudent("Teddy", "Jones", "31-01-2001", "teddy96@gmail.com");
+
+        Course french = topic.getCourse("French");
+
+        assertAll("Test enrolling student",
+                () -> assertEquals(18, student.getAge()),
+                () -> assertDoesNotThrow(() -> {
+                    french.enroll(student);
+                })
+        );
+
+        assertEquals(0, french.getCoursePayments().get(student.getEmail()));
     }
 }
