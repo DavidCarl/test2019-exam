@@ -183,13 +183,7 @@ public class CourseTest {
         Student student = main.registerStudent("Teddy", "Jones", "31-01-2001", "teddy96@gmail.com");
 
         Course french = topic.getCourse("French");
-
-        assertAll("Test enrolling student",
-                () -> assertEquals(18, student.getAge()),
-                () -> assertDoesNotThrow(() -> {
-                    french.enroll(student);
-                })
-        );
+        french.enroll(student);
 
         assertTrue(french.getCoursePayments().containsKey(student.getEmail()));
     }
@@ -199,13 +193,7 @@ public class CourseTest {
         Student student = main.registerStudent("Teddy", "Jones", "31-01-2001", "teddy96@gmail.com");
 
         Course french = topic.getCourse("French");
-
-        assertAll("Test enrolling student",
-                () -> assertEquals(18, student.getAge()),
-                () -> assertDoesNotThrow(() -> {
-                    french.enroll(student);
-                })
-        );
+        french.enroll(student);
 
         assertEquals(0, french.getCoursePayments().get(student.getEmail()));
     }
