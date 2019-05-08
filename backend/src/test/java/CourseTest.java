@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
-public class CourseTests {
+public class CourseTest {
     Topic topic;
 
     @BeforeEach
@@ -54,6 +54,28 @@ public class CourseTests {
         boolean addedCourse = topic.addCourse("eNGliSH", mockedTeacher, "203", 150);
 
         assertFalse(addedCourse);
+    }
+
+    @Test
+    void shouldNotAddCourseIfPriceBelowZero(){
+        Teacher mockedTeacher = mock(Teacher.class);
+
+        when(mockedTeacher.isEligible()).thenReturn(true);
+
+        boolean addedCourse = topic.addCourse("English", mockedTeacher, "203", -1);
+
+        assertFalse(addedCourse);
+    }
+
+    @Test
+    void shouldAddCourseIfCourseIsFree(){
+        Teacher mockedTeacher = mock(Teacher.class);
+
+        when(mockedTeacher.isEligible()).thenReturn(true);
+
+        boolean addedCourse = topic.addCourse("English", mockedTeacher, "203", 0);
+
+        assertTrue(addedCourse);
     }
 
     //TODO Implement a test to verify the teacher's course count is incremented
@@ -186,5 +208,64 @@ public class CourseTests {
         );
 
         assertEquals(0, french.getCoursePayments().get(student.getEmail()));
+    }
+
+    @Test
+    void shouldThrowExceptionIfNotEnrolledStudentWhenAcceptingPayment(){
+        Student notEnrolled = main.registerStudent("Anna", "Unenrolled", "13-09-2000", "annaunenr@gmail.com");
+
+        assertThrows(NoSuchElementException.class, () -> {
+            topic.getCourse("French").acceptPayment(notEnrolled, 1);
+        });
+    }
+
+    @Test
+    void shouldThrowExceptionIfPaymentLessOrEqualTo0(){
+        Student enrolled = main.registerStudent("Anna", "Enrolled", "13-09-2000", "annaunenr@gmail.com");
+
+        Course french = topic.getCourse("French");
+        french.enroll(enrolled);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            french.acceptPayment(enrolled, 0);
+        });
+    }
+
+    @Test
+    void shouldReturnTheExtraPaymentAsPositive(){
+
+        Teacher mockedTeacher = mock(Teacher.class);
+        when(mockedTeacher.isEligible()).thenReturn(true);
+
+        topic.addCourse("Chinese", mockedTeacher, "303", 200);
+        Course chinese = topic.getCourse("Chinese");
+
+        Student student = main.registerStudent("Sara", "Jackson", "25-03-1999", "sara99@gmail.com");
+
+        chinese.enroll(student);
+
+        assertAll("Test positive returned price",
+                () -> assertEquals(150, chinese.acceptPayment(student, 350)),
+                () -> assertTrue(chinese.acceptPayment(student, 20) > 0)
+        );
+    }
+
+    @Test
+    void shouldReturnTheMissingPaymentAsNegative(){
+
+        Teacher mockedTeacher = mock(Teacher.class);
+        when(mockedTeacher.isEligible()).thenReturn(true);
+
+        topic.addCourse("Chinese", mockedTeacher, "303", 200);
+        Course chinese = topic.getCourse("Chinese");
+
+        Student student = main.registerStudent("Sara", "Jackson", "25-03-1999", "sara99@gmail.com");
+
+        chinese.enroll(student);
+
+        assertAll("Test positive returned price",
+                () -> assertEquals(-50, chinese.acceptPayment(student, 150)),
+                () -> assertTrue(chinese.acceptPayment(student, 10) < 0)
+        );
     }
 }

@@ -47,4 +47,21 @@ public class Course {
         _coursePayments.put(student.getEmail(), 0);
     }
 
+    public int acceptPayment(Student student, int payment){
+        if(!_coursePayments.containsKey(student.getEmail()))
+            throw new NoSuchElementException();
+
+        if(payment <= 0)
+            throw new IllegalArgumentException("Payment cannot be 0 or less");
+
+        int currentPayment = _coursePayments.get(student.getEmail());
+        int leftover = _price - (currentPayment + payment);
+
+        if(leftover <= 0)
+            _coursePayments.put(student.getEmail(), _price);
+        else
+            _coursePayments.put(student.getEmail(), currentPayment + payment);
+
+        return leftover * -1;
+    }
 }
