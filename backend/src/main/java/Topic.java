@@ -45,8 +45,7 @@ public class Topic {
             throw new NoSuchElementException();
     }
 
-    public void enrollToCourse(String courseName, Student student)
-    {
+    public void enrollToCourse(String courseName, Student student) {
         Course course = getCourse(courseName);
         try
         {
