@@ -1,18 +1,18 @@
-package API;
+package API; // Note your package will be {{ groupId }}.rest
 
 import javax.ws.rs.GET;
-        import javax.ws.rs.Path;
-        import javax.ws.rs.Produces;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
-// The Java class will be hosted at the URI path "/helloworld"
-@Path("/helloworld")
+@Path("/test")
 public class test {
-    // The Java method will process HTTP GET requests
-    @GET
-    // The Java method will produce content identified by the MIME Media type "text/plain"
-    @Produces("text/plain")
-    public String getClichedMessage() {
-        // Return some cliched textual content
-        return "Hello World";
+    @GET // This annotation indicates GET request
+    @Path("/hello/{testparam}")
+    public Response hello(@PathParam("testparam") String testparam) {
+        if(testparam.equals("test"))
+            return Response.status(200).entity("hello").build();
+        else
+            return Response.status(400).entity("something wrong").build();
     }
 }
