@@ -15,44 +15,56 @@ class TeacherTest {
     // Here we test if the stuff gets added correctly as we want it to
     @Test
     void getTeachingCourses() {
-        String[] emptyArray = new String[3];
+        Course[] emptyArray = new Course[3];
+
+        Course course1 = new Course("Intro programming", teach, "101");
+        Course course2 = new Course("Advanced programming", teach, "102");
+        Course course3 = new Course("Expert programming", teach, "103");
 
         assertEquals(teach.getTeachingCourses().length, 3);
         assertArrayEquals(teach.getTeachingCourses(), emptyArray);
-        emptyArray[0] = "Test 1";
-        teach.addCourse("Test 1");
+        emptyArray[0] = course1;
+        teach.addCourse(course1);
         assertArrayEquals(teach.getTeachingCourses(), emptyArray);
-        emptyArray[1] = "Test 2";
-        teach.addCourse("Test 2");
+        emptyArray[1] = course2;
+        teach.addCourse(course2);
         assertArrayEquals(teach.getTeachingCourses(), emptyArray);
-        emptyArray[2] = "Test 3";
-        teach.addCourse("Test 3");
+        emptyArray[2] = course3;
+        teach.addCourse(course3);
         assertArrayEquals(teach.getTeachingCourses(), emptyArray);
     }
 
     // Here we test the limiter on the amount of courses the teacher can have.
     @Test
     void addCourse() {
+
+        Course course1 = new Course("Intro programming", teach, "101");
+        Course course2 = new Course("Advanced programming", teach, "102");
+        Course course3 = new Course("Expert programming", teach, "103");
+        Course course4 = new Course("Baking", teach, "201");
+
         assertAll("Test Course limit on teacher",
-                () -> assertTrue(teach.addCourse("Test 0")),
-                () -> assertTrue(teach.addCourse("Test 1")),
-                () -> assertTrue(teach.addCourse("Test 2")),
-                () -> assertFalse(teach.addCourse("Test 3")),
-                () -> assertTrue(teach.removeCourse("Test 1")),
-                () -> assertTrue(teach.addCourse("Test 4"))
+                () -> assertTrue(teach.addCourse(course1)),
+                () -> assertTrue(teach.addCourse(course2)),
+                () -> assertTrue(teach.addCourse(course3)),
+                () -> assertFalse(teach.addCourse(course4)),
+                () -> assertTrue(teach.removeCourse(course3)),
+                () -> assertTrue(teach.addCourse(course4))
         );
     }
 
     // Here we test if the removal af a added course does actually work.
     @Test
     void removeCourse() {
-        String[] testArray = new String[3];
+        Course[] testArray = new Course[3];
+
+        Course course1 = new Course("Intro programming", teach, "101");
 
         assertArrayEquals(teach.getTeachingCourses(), testArray);
-        teach.addCourse("Test 1");
-        testArray[0] = "Test 1";
+        teach.addCourse(course1);
+        testArray[0] = course1;
         assertArrayEquals(teach.getTeachingCourses(), testArray);
-        teach.removeCourse("Test 1");
+        teach.removeCourse(course1);
         testArray[0] = null;
         assertArrayEquals(teach.getTeachingCourses(), testArray);
     }
@@ -60,10 +72,12 @@ class TeacherTest {
     // Here we test if its possible to screw up the array by trying to remove a course before anything has been added.
     @Test
     void removeFromEmptyCourse(){
-        String[] testArray = new String[3];
+        Course[] testArray = new Course[3];
+
+        Course course1 = new Course("Intro programming", teach, "101");
 
         assertArrayEquals(teach.getTeachingCourses(), testArray);
-        assertFalse(teach.removeCourse("Test 1"));
+        assertFalse(teach.removeCourse(course1));
     }
 
     // In this section we are testing the amount of worked hours from the last semester.
@@ -94,5 +108,10 @@ class TeacherTest {
         assertFalse(teach.getVoteRight());
         teach.setPsTeaching(20);
         assertTrue(teach.getVoteRight());
+    }
+
+    @Test
+    void isEligible(){
+        assertTrue(teach.isEligible());
     }
 }
