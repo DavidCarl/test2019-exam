@@ -22,6 +22,12 @@ public class TeacherRepository {
         return true;
     }
 
+    public boolean add(String name, String email, String eduBackground) {
+        Teacher teacher = new Teacher(name, email, eduBackground);
+
+        return add(teacher);
+    }
+
     public Teacher get(String email){
         if(!teachers.containsKey(email))
             throw new NoSuchElementException();
@@ -38,5 +44,9 @@ public class TeacherRepository {
 
     public int size() {
         return teachers.size();
+    }
+
+    public void empty(){
+        teachers.clear();
     }
 }

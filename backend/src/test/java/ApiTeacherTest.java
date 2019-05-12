@@ -1,6 +1,7 @@
 import API.Teacher;
 import backend.Course;
 import backend.TeacherRepository;
+import backend.TopicRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.resteasy.core.Dispatcher;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ApiTeacherTest {
@@ -28,12 +30,13 @@ public class ApiTeacherTest {
 
         noDefaults = new POJOResourceFactory(Teacher.class);
         dispatcher.getRegistry().addResourceFactory(noDefaults);
+
+        TeacherRepository.getInstance().empty();
     }
 
     @Test
     public void shouldGetCourses() {
         try {
-
             backend.Teacher teacher = new backend.Teacher("Lenard Lyndor", "lylly@gmail.com", "Teacher edu");
             TeacherRepository.getInstance().add(teacher);
 
@@ -58,7 +61,6 @@ public class ApiTeacherTest {
             // Check the status code
             assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-            // Check that the message we receive is "hello"
             assertEquals(coursesJson, response.getContentAsString());
 
         } catch (URISyntaxException e) {
@@ -78,7 +80,6 @@ public class ApiTeacherTest {
             // Check the status code
             assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 
-            // Check that the message we receive is "hello"
             assertEquals("{'errorMessage':'Teacher with this email is not found!'}", response.getContentAsString());
 
         } catch (URISyntaxException e) {
@@ -90,5 +91,50 @@ public class ApiTeacherTest {
     public void shouldReturnBadRequestWhenInvalidEmail(){
 
         //TODO: Test if a bad request is received if email validator fails to validate an email.
+    }
+
+    @Test
+    public void shouldRegisterNewTeacherWithSuccess(){
+        try {
+            MockHttpRequest request = MockHttpRequest.post("teacher/register/Lenard%20Lyndor/lylly@gmail.com/Teacher%20edu");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+
+            // Check the status code
+            assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+
+            assertDoesNotThrow(() -> {
+                TeacherRepository.getInstance().get("lylly@gmail.com");
+            });
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void shouldReturnConflictIfTeacherExists(){
+        try {
+            backend.Teacher teacher = new backend.Teacher("Lenard Lyndor", "lylly@gmail.com", "Teacher edu");
+            TeacherRepository.getInstance().add(teacher);
+
+            MockHttpRequest request = MockHttpRequest.post("teacher/register/Lenard%20Lyndor/lylly@gmail.com/Teacher%20edu");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+
+            // Check the status code
+            assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
+
+            assertEquals("{'errorMessage':'Teacher with this email is already registered!'}", response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 }
