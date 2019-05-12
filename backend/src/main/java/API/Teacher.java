@@ -41,4 +41,18 @@ public class Teacher {
         else
             return Response.status(409).entity("{'errorMessage':'Teacher with this email is already registered!'}").build();
     }
+
+    @GET // This annotation indicates GET request
+    @Path("/status/{email}")
+    public Response status(@PathParam("email") String email) {
+        try {
+            boolean eligible = repository.get(email).isEligible();
+
+            return Response.ok("{'isEligible': " + eligible + "}", MediaType.APPLICATION_JSON).build();
+
+        }catch(NoSuchElementException e){
+            return Response.status(404).type(MediaType.APPLICATION_JSON)
+                    .entity("{'errorMessage':'Teacher with this email is not found!'}").build();
+        }
+    }
 }

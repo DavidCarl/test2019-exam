@@ -18,6 +18,8 @@ import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ApiTeacherTest {
 
@@ -136,5 +138,68 @@ public class ApiTeacherTest {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void shouldGetEligibility() {
+        try {
+            backend.Teacher mockedTeacher = mock(backend.Teacher.class);
+            when(mockedTeacher.isEligible()).thenReturn(true);
+            when(mockedTeacher.getEmail()).thenReturn("lylly@gmail.com");
+
+            backend.Teacher mockedTeacherFalse = mock(backend.Teacher.class);
+            when(mockedTeacherFalse.isEligible()).thenReturn(false);
+            when(mockedTeacherFalse.getEmail()).thenReturn("subole@gmail.com");
+
+            TeacherRepository.getInstance().add(mockedTeacher);
+            TeacherRepository.getInstance().add(mockedTeacherFalse);
+
+
+            MockHttpRequest requestMocked = MockHttpRequest.get("teacher/status/lylly@gmail.com");
+            MockHttpResponse responseMocked = new MockHttpResponse();
+
+            MockHttpRequest requestMockedFalse = MockHttpRequest.get("teacher/status/subole@gmail.com");
+            MockHttpResponse responseMockedFalse = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(requestMocked, responseMocked);
+            dispatcher.invoke(requestMockedFalse, responseMockedFalse);
+
+
+            // Check the status code
+            assertEquals(Response.Status.OK.getStatusCode(), responseMockedFalse.getStatus());
+            assertEquals(Response.Status.OK.getStatusCode(), responseMocked.getStatus());
+
+            assertEquals("{'isEligible': true}", responseMocked.getContentAsString());
+            assertEquals("{'isEligible': false}", responseMockedFalse.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void shouldReturnNotFoundWithUnexistentEmailEligibility(){
+        try{
+            MockHttpRequest request = MockHttpRequest.get("teacher/status/nonexistent@gmail.com");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+
+            assertEquals("{'errorMessage':'Teacher with this email is not found!'}", response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test @Disabled
+    public void shouldReturnBadRequestWhenInvalidEmailEligibility(){
+
+        //TODO: Test if a bad request is received if email validator fails to validate an email.
     }
 }
