@@ -1,9 +1,6 @@
 package API;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import backend.*;
@@ -49,6 +46,20 @@ public class Teacher {
             boolean eligible = repository.get(email).isEligible();
 
             return Response.ok("{'isEligible': " + eligible + "}", MediaType.APPLICATION_JSON).build();
+
+        }catch(NoSuchElementException e){
+            return Response.status(404).type(MediaType.APPLICATION_JSON)
+                    .entity("{'errorMessage':'Teacher with this email is not found!'}").build();
+        }
+    }
+
+    @PUT // This annotation indicates GET request
+    @Path("/education/{email}/{newBackground}")
+    public Response education(@PathParam("email") String email, @PathParam("newBackground") String newBackground) {
+
+        try {
+            repository.get(email).setEduBackground(newBackground);
+            return Response.status(202).build();
 
         }catch(NoSuchElementException e){
             return Response.status(404).type(MediaType.APPLICATION_JSON)

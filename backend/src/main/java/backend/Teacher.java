@@ -84,6 +84,14 @@ public class Teacher {
         this.psTeaching = psTeaching;
     }
 
+    public void setEduBackground(String eduBackground) {
+        this.eduBackground = eduBackground;
+    }
+
+    public String getEduBackground() {
+        return eduBackground;
+    }
+
     public boolean getVoteRight(){
         if(psTeaching >= 20){
             return true;

@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,31 +68,6 @@ public class ApiTeacherTest {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void shouldReturnNotFoundWithUnexistentEmail(){
-        try{
-            MockHttpRequest request = MockHttpRequest.get("teacher/courses/nonexistent@gmail.com");
-            MockHttpResponse response = new MockHttpResponse();
-
-            // Invoke the request
-            dispatcher.invoke(request, response);
-
-            // Check the status code
-            assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
-
-            assertEquals("{'errorMessage':'Teacher with this email is not found!'}", response.getContentAsString());
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test @Disabled
-    public void shouldReturnBadRequestWhenInvalidEmail(){
-
-        //TODO: Test if a bad request is received if email validator fails to validate an email.
     }
 
     @Test
@@ -179,18 +154,63 @@ public class ApiTeacherTest {
     }
 
     @Test
-    public void shouldReturnNotFoundWithUnexistentEmailEligibility(){
-        try{
-            MockHttpRequest request = MockHttpRequest.get("teacher/status/nonexistent@gmail.com");
+    public void shouldUpdateEducationLevel() {
+        try {
+            backend.Teacher teacher = new backend.Teacher("Lenard Lyndor", "lylly@gmail.com", "Teacher edu");
+            TeacherRepository.getInstance().add(teacher);
+
+            MockHttpRequest request = MockHttpRequest.put("teacher/education/lylly@gmail.com/Master-education");
             MockHttpResponse response = new MockHttpResponse();
 
             // Invoke the request
             dispatcher.invoke(request, response);
 
-            // Check the status code
-            assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 
-            assertEquals("{'errorMessage':'Teacher with this email is not found!'}", response.getContentAsString());
+            // Check the status code
+            assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
+
+            assertEquals("Master-education", teacher.getEduBackground());
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void shouldReturnNotFoundWithNonExistentEmail(){
+        try{
+            // Get courses
+            MockHttpRequest coursesRequest = MockHttpRequest.get("teacher/courses/nonexistent@gmail.com");
+            MockHttpResponse coursesResponse = new MockHttpResponse();
+
+            // Get status
+            MockHttpRequest statusRequest = MockHttpRequest.get("teacher/status/nonexistent@gmail.com");
+            MockHttpResponse statusResponse = new MockHttpResponse();
+
+            // Update education
+            MockHttpRequest editEducationRequest = MockHttpRequest.put("teacher/education/nonexistent@gmail.com/NewEdu");
+            MockHttpResponse editEducationResponse = new MockHttpResponse();
+
+
+            // Invoke the requests
+            dispatcher.invoke(coursesRequest, coursesResponse);
+            dispatcher.invoke(statusRequest, statusResponse);
+            dispatcher.invoke(editEducationRequest, editEducationResponse);
+
+
+            assertAll("Check status codes",
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), coursesResponse.getStatus()),
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), statusResponse.getStatus()),
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), editEducationResponse.getStatus())
+
+            );
+
+            assertAll("Check response body",
+                    () -> assertEquals("{'errorMessage':'Teacher with this email is not found!'}", coursesResponse.getContentAsString()),
+                    () -> assertEquals("{'errorMessage':'Teacher with this email is not found!'}", statusResponse.getContentAsString()),
+                    () -> assertEquals("{'errorMessage':'Teacher with this email is not found!'}", editEducationResponse.getContentAsString())
+
+            );
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -198,8 +218,9 @@ public class ApiTeacherTest {
     }
 
     @Test @Disabled
-    public void shouldReturnBadRequestWhenInvalidEmailEligibility(){
+    public void shouldReturnBadRequestWhenInvalidEmailEducation(){
 
-        //TODO: Test if a bad request is received if email validator fails to validate an email.
+        //TODO: Test if a bad request is received if email validator fails to validate an email (courses, status, education)
     }
+    
 }
