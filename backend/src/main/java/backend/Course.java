@@ -1,3 +1,5 @@
+package backend;
+
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -5,7 +7,7 @@ public class Course {
     private static final int _MAXSTUDENTS = 20;
 
     private String _name;
-    private Teacher _teacher;
+    private transient Teacher _teacher;
     private String _roomNr;
     private int _price;
     private HashMap<String, Integer> _coursePayments;
@@ -40,13 +42,13 @@ public class Course {
 
     public void enroll(Student student){
         if(_coursePayments.containsKey(student.getEmail()))
-            throw new IllegalStateException("Student already enrolled");
+            throw new IllegalStateException("backend.Student already enrolled");
 
         if(_coursePayments.size() >= _MAXSTUDENTS)
             throw new IndexOutOfBoundsException();
 
         if(student.getAge() < 18)
-            throw new IllegalStateException("Student is a minor");
+            throw new IllegalStateException("backend.Student is a minor");
 
         _coursePayments.put(student.getEmail(), 0);
     }

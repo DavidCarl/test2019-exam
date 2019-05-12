@@ -1,17 +1,29 @@
+package backend;
+
 import java.util.Arrays;
 
 public class Teacher {
     //Basic information about the teacher
     private String name;
     private String eduBackground;
+    private String email;
 
     //Course related information
     private Course[] teachingCourses = new Course[3];
     private int psTeaching = 0; //Previous Semester Teaching
 
-    public Teacher(String name, String eduBackground) {
+    public Teacher(String name, String email, String eduBackground) {
         this.name = name;
+        this.email = email;
         this.eduBackground = eduBackground;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Course[] getTeachingCourses() {
@@ -90,6 +102,7 @@ public class Teacher {
     public String toString() {
         return "Teacher{" +
                 "name='" + name + '\'' +
+                "email='" + email + '\'' +
                 ", eduBackground='" + eduBackground + '\'' +
                 ", teachingCourses=" + Arrays.toString(teachingCourses) +
                 ", psTeaching=" + psTeaching +
