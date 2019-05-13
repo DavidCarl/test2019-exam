@@ -1,7 +1,6 @@
 import API.Teacher;
 import backend.Course;
 import backend.TeacherRepository;
-import backend.TopicRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.resteasy.core.Dispatcher;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +64,7 @@ public class ApiTeacherTest {
             assertEquals(coursesJson, response.getContentAsString());
 
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            fail("The test URL isn't correct.");
         }
     }
 
@@ -88,7 +86,7 @@ public class ApiTeacherTest {
             });
 
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            fail("The test URL isn't correct.");
         }
     }
 
@@ -111,7 +109,7 @@ public class ApiTeacherTest {
             assertEquals("{'errorMessage':'Teacher with this email is already registered!'}", response.getContentAsString());
 
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            fail("The test URL isn't correct.");
         }
     }
 
@@ -149,7 +147,7 @@ public class ApiTeacherTest {
             assertEquals("{'isEligible': false}", responseMockedFalse.getContentAsString());
 
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            fail("The test URL isn't correct.");
         }
     }
 
@@ -172,7 +170,7 @@ public class ApiTeacherTest {
             assertEquals("Master-education", teacher.getEduBackground());
 
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            fail("The test URL isn't correct.");
         }
     }
 
@@ -213,7 +211,7 @@ public class ApiTeacherTest {
             );
 
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            fail("The test URLs aren't correct.");
         }
     }
 
@@ -222,5 +220,5 @@ public class ApiTeacherTest {
 
         //TODO: Test if a bad request is received if email validator fails to validate an email (courses, status, education)
     }
-    
+
 }
