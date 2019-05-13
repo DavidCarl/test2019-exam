@@ -51,6 +51,7 @@ public class Course {
             throw new IllegalStateException("backend.Student is a minor");
 
         _coursePayments.put(student.getEmail(), 0);
+        student.addCourse(this);
     }
 
     public int acceptPayment(Student student, int payment){
