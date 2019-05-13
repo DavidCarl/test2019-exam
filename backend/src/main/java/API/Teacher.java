@@ -45,7 +45,7 @@ public class Teacher {
         try {
             boolean eligible = repository.get(email).isEligible();
 
-            return Response.ok("{'isEligible': " + eligible + "}", MediaType.APPLICATION_JSON).build();
+            return Response.ok("{\"isEligible\": " + eligible + "}", MediaType.APPLICATION_JSON).build();
 
         }catch(NoSuchElementException e){
             return Response.status(404).type(MediaType.APPLICATION_JSON)
