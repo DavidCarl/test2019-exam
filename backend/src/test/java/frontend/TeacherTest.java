@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,9 +48,20 @@ public class TeacherTest {
         email = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("emailField")));
         WebElement name;
         name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nameField")));
-        WebElement edu;
-        edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
+        Select edu = new Select(driver.findElement(By.id("eduField")));
+        WebElement button;
+        button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
+        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
 
         assertEquals("Teacher signup", driver.getTitle());
+
+        email.sendKeys("test@testy.com");
+        name.sendKeys("test");
+        edu.selectByIndex(1);
+        button.click();
+
+        //We should check if the user is being created - Can be done with the following API call
+        //http://localhost:8080/2/api/teacher/status/{email}
+
     }
 }

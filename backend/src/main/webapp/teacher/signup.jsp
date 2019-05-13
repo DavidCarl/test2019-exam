@@ -24,7 +24,7 @@ Education Level:
     <option value="Edu_4">Edu 4</option>
 </select>
 <br/>
-<button onclick="teachersignup()">Click me :)</button>
+<button onclick="teachersignup()" id="signupbutton">Click me :)</button>
 <script src="../javascript/api.js"></script>
 <script src="../javascript/teacher.js"></script>
 </body>
