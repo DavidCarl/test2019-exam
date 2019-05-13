@@ -1,3 +1,5 @@
+import backend.Course;
+import backend.Teacher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +10,7 @@ class TeacherTest {
 
     @BeforeEach //This is to isolate the different test, this way we reset our teacher object before evey test
     void teacherSetup(){
-        teach = new Teacher("lul", "Teacher edu");
+        teach = new Teacher("lul", "lylly@gmail.com", "Teacher edu");
     }
 
     // In this section we are testing the Course array the teacher have.
@@ -17,9 +19,9 @@ class TeacherTest {
     void getTeachingCourses() {
         Course[] emptyArray = new Course[3];
 
-        Course course1 = new Course("Intro programming", teach, "101");
-        Course course2 = new Course("Advanced programming", teach, "102");
-        Course course3 = new Course("Expert programming", teach, "103");
+        Course course1 = new Course("Intro programming", teach, "101", 100);
+        Course course2 = new Course("Advanced programming", teach, "102", 200);
+        Course course3 = new Course("Expert programming", teach, "103", 300);
 
         assertEquals(teach.getTeachingCourses().length, 3);
         assertArrayEquals(teach.getTeachingCourses(), emptyArray);
@@ -38,10 +40,10 @@ class TeacherTest {
     @Test
     void addCourse() {
 
-        Course course1 = new Course("Intro programming", teach, "101");
-        Course course2 = new Course("Advanced programming", teach, "102");
-        Course course3 = new Course("Expert programming", teach, "103");
-        Course course4 = new Course("Baking", teach, "201");
+        Course course1 = new Course("Intro programming", teach, "101", 100);
+        Course course2 = new Course("Advanced programming", teach, "102", 200);
+        Course course3 = new Course("Expert programming", teach, "103", 300);
+        Course course4 = new Course("Baking", teach, "201", 400);
 
         assertAll("Test Course limit on teacher",
                 () -> assertTrue(teach.addCourse(course1)),
@@ -58,7 +60,7 @@ class TeacherTest {
     void removeCourse() {
         Course[] testArray = new Course[3];
 
-        Course course1 = new Course("Intro programming", teach, "101");
+        Course course1 = new Course("Intro programming", teach, "101", 100);
 
         assertArrayEquals(teach.getTeachingCourses(), testArray);
         teach.addCourse(course1);
@@ -74,7 +76,7 @@ class TeacherTest {
     void removeFromEmptyCourse(){
         Course[] testArray = new Course[3];
 
-        Course course1 = new Course("Intro programming", teach, "101");
+        Course course1 = new Course("Intro programming", teach, "101", 500);
 
         assertArrayEquals(teach.getTeachingCourses(), testArray);
         assertFalse(teach.removeCourse(course1));

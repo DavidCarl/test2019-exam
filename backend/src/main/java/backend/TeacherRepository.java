@@ -1,0 +1,52 @@
+package backend;
+
+import java.util.HashMap;
+import java.util.NoSuchElementException;
+
+public class TeacherRepository {
+    HashMap<String, Teacher> teachers;
+    private static final TeacherRepository SINGLE_INSTANCE = new TeacherRepository();
+
+    private TeacherRepository() {
+        teachers = new HashMap<String, Teacher>();
+    }
+    public static TeacherRepository getInstance() {
+        return SINGLE_INSTANCE;
+    }
+
+    public boolean add(Teacher teacher) {
+        if(teachers.containsKey(teacher.getEmail()))
+            return false;
+
+        teachers.put(teacher.getEmail(), teacher);
+        return true;
+    }
+
+    public boolean add(String name, String email, String eduBackground) {
+        Teacher teacher = new Teacher(name, email, eduBackground);
+
+        return add(teacher);
+    }
+
+    public Teacher get(String email){
+        if(!teachers.containsKey(email))
+            throw new NoSuchElementException();
+
+        return teachers.get(email);
+    }
+
+    public void remove(String email){
+        if(!teachers.containsKey(email))
+            throw new NoSuchElementException();
+
+        teachers.remove(email);
+    }
+
+    public int size() {
+        return teachers.size();
+    }
+
+    public void empty(){
+        teachers.clear();
+    }
+}

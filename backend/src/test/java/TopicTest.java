@@ -1,3 +1,5 @@
+import backend.Topic;
+import backend.TopicRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

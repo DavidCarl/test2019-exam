@@ -9,6 +9,7 @@ public class apicontroller extends Application {
     public apicontroller() {
         //Register any APIs controllers here
         singletons.add(new test());
+        singletons.add(new Teacher());
     }
     @Override
     public Set<Object> getSingletons() {
