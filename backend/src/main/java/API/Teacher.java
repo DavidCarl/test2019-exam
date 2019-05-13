@@ -25,7 +25,7 @@ public class Teacher {
 
         }catch(NoSuchElementException e){
             return Response.status(404).type(MediaType.APPLICATION_JSON)
-                    .entity("{'errorMessage':'Teacher with this email is not found!'}").build();
+                    .entity("{\"errorMessage\":\"Teacher with this email is not found!\"}").build();
         }
     }
 
@@ -36,7 +36,7 @@ public class Teacher {
         if(repository.add(name,email,background))
             return Response.status(201).build();
         else
-            return Response.status(409).entity("{'errorMessage':'Teacher with this email is already registered!'}").build();
+            return Response.status(409).entity("{\"errorMessage\":\"Teacher with this email is already registered!\"}").build();
     }
 
     @GET // This annotation indicates GET request
@@ -45,11 +45,11 @@ public class Teacher {
         try {
             boolean eligible = repository.get(email).isEligible();
 
-            return Response.ok("{'isEligible': " + eligible + "}", MediaType.APPLICATION_JSON).build();
+            return Response.ok("{\"isEligible\": " + eligible + "}", MediaType.APPLICATION_JSON).build();
 
         }catch(NoSuchElementException e){
             return Response.status(404).type(MediaType.APPLICATION_JSON)
-                    .entity("{'errorMessage':'Teacher with this email is not found!'}").build();
+                    .entity("{\"errorMessage\":\"Teacher with this email is not found!\"}").build();
         }
     }
 
@@ -63,7 +63,7 @@ public class Teacher {
 
         }catch(NoSuchElementException e){
             return Response.status(404).type(MediaType.APPLICATION_JSON)
-                    .entity("{'errorMessage':'Teacher with this email is not found!'}").build();
+                    .entity("{\"errorMessage\":\"Teacher with this email is not found!\"}").build();
         }
     }
 }
