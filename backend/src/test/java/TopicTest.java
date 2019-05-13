@@ -13,7 +13,7 @@ public class TopicTest {
     @BeforeEach
         //Here the repository would be initialized before each test.
     void topicRepoSetup(){
-        topics = new TopicRepository();
+        topics = TopicRepository.getInstance();
     }
 
     // Here we test if we can add a topic to the previously initialized repository.
