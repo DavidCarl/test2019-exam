@@ -106,7 +106,7 @@ public class ApiTeacherTest {
             // Check the status code
             assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
 
-            assertEquals("{'errorMessage':'Teacher with this email is already registered!'}", response.getContentAsString());
+            assertEquals("{\"errorMessage\":\"Teacher with this email is already registered!\"}", response.getContentAsString());
 
         } catch (URISyntaxException e) {
             fail("The test URL isn't correct.");
@@ -143,8 +143,8 @@ public class ApiTeacherTest {
             assertEquals(Response.Status.OK.getStatusCode(), responseMockedFalse.getStatus());
             assertEquals(Response.Status.OK.getStatusCode(), responseMocked.getStatus());
 
-            assertEquals("{'isEligible': true}", responseMocked.getContentAsString());
-            assertEquals("{'isEligible': false}", responseMockedFalse.getContentAsString());
+            assertEquals("{\"isEligible\": true}", responseMocked.getContentAsString());
+            assertEquals("{\"isEligible\": false}", responseMockedFalse.getContentAsString());
 
         } catch (URISyntaxException e) {
             fail("The test URL isn't correct.");
@@ -204,9 +204,9 @@ public class ApiTeacherTest {
             );
 
             assertAll("Check response body",
-                    () -> assertEquals("{'errorMessage':'Teacher with this email is not found!'}", coursesResponse.getContentAsString()),
-                    () -> assertEquals("{'errorMessage':'Teacher with this email is not found!'}", statusResponse.getContentAsString()),
-                    () -> assertEquals("{'errorMessage':'Teacher with this email is not found!'}", editEducationResponse.getContentAsString())
+                    () -> assertEquals("{\"errorMessage\":\"Teacher with this email is not found!\"}", coursesResponse.getContentAsString()),
+                    () -> assertEquals("{\"errorMessage\":\"Teacher with this email is not found!\"}", statusResponse.getContentAsString()),
+                    () -> assertEquals("{\"errorMessage\":\"Teacher with this email is not found!\"}", editEducationResponse.getContentAsString())
 
             );
 
