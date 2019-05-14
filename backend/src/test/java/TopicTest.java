@@ -14,6 +14,7 @@ public class TopicTest {
         //Here the repository would be initialized before each test.
     void topicRepoSetup(){
         topics = TopicRepository.getInstance();
+        topics.empty();
     }
 
     // Here we test if we can add a topic to the previously initialized repository.
