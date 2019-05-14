@@ -24,6 +24,7 @@ function get_api(endpoint){
 }
 
 function post_api(endpoint, data){
+    var messagediv = document.getElementById('messagediv')
     fetch(endpoint, {
         method: 'post',
         headers:{
@@ -32,8 +33,14 @@ function post_api(endpoint, data){
     })
     .then(function (response) {
         console.log('Request success: ', response);
+        if(response.status != 201){
+            messagediv.textContent = 'ERROR';
+        }else{
+            messagediv.textContent = 'SUCCESS';
+        }
     })
     .catch(function (error) {
         console.log('Request failure: ', error);
+        messagediv.textContent = 'ERROR';
     });
 }

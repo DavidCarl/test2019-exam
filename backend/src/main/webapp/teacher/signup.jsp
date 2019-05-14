@@ -25,7 +25,7 @@ Education Level:
 </select>
 <br/>
 <button onclick="teachersignup()" id="signupbutton">Click me :)</button>
-<script src="../javascript/api.js"></script>
+<div id="messagediv"></div>
 <script src="../javascript/teacher.js"></script>
 </body>
 </html>
