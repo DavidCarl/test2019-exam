@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -11,25 +12,33 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TeacherTest {
 
     WebDriver driver;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         System.setProperty("webdriver.gecko.driver", "geckodriver");
         driver = new FirefoxDriver();
     }
 
     @AfterEach
-    void teardown(){
+    void teardown() {
         driver.quit();
     }
 
     @Test
-    void teacher_index(){
+    void teacher_index() {
         driver.get("http://localhost:8080/2/teacher");
         WebDriverWait wait = new WebDriverWait(driver, 2);
         WebElement href;
@@ -41,7 +50,7 @@ public class TeacherTest {
     }
 
     @Test
-    void teacher_signup(){
+    void teacher_signup() {
         driver.get("http://localhost:8080/2/teacher/signup.jsp");
         WebDriverWait wait = new WebDriverWait(driver, 2);
         WebElement email;
@@ -55,7 +64,9 @@ public class TeacherTest {
 
         assertEquals("Teacher signup", driver.getTitle());
 
-        email.sendKeys("test@testy.com");
+        String inputEmail = getAlphaNumericString(5) + "@testy.com";
+
+        email.sendKeys(inputEmail);
         name.sendKeys("test");
         edu.selectByIndex(1);
         button.click();
@@ -63,5 +74,189 @@ public class TeacherTest {
         //We should check if the user is being created - Can be done with the following API call
         //http://localhost:8080/2/api/teacher/status/{email}
 
+        String output = apiCall("http://localhost:8080/2/api/teacher/status/" + inputEmail);
+        assertEquals("{\"isEligible\": true}", output);
+    }
+
+    @Test
+    void teacher_signup_missing_name() {
+        driver.get("http://localhost:8080/2/teacher/signup.jsp");
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        WebElement email;
+        email = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("emailField")));
+        WebElement name;
+        name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nameField")));
+        Select edu = new Select(driver.findElement(By.id("eduField")));
+        WebElement button;
+        button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
+        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
+
+        assertEquals("Teacher signup", driver.getTitle());
+
+        String inputEmail = getAlphaNumericString(5) + "@testy.com";
+
+        email.sendKeys(inputEmail);
+        name.sendKeys("");
+        edu.selectByIndex(1);
+        button.click();
+
+        //We should check if the user is being created - Can be done with the following API call
+        //http://localhost:8080/2/api/teacher/status/{email}
+
+        try {
+            driver.switchTo().alert();
+            assertTrue(true);
+        } catch (NoAlertPresentException Ex) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    void teacher_signup_missing_email() {
+        driver.get("http://localhost:8080/2/teacher/signup.jsp");
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        WebElement email;
+        email = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("emailField")));
+        WebElement name;
+        name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nameField")));
+        Select edu = new Select(driver.findElement(By.id("eduField")));
+        WebElement button;
+        button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
+        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
+
+        assertEquals("Teacher signup", driver.getTitle());
+
+        String inputEmail = "";
+
+        email.sendKeys(inputEmail);
+        name.sendKeys("test");
+        edu.selectByIndex(1);
+        button.click();
+
+        //We should check if the user is being created - Can be done with the following API call
+        //http://localhost:8080/2/api/teacher/status/{email}
+
+        try {
+            driver.switchTo().alert();
+            assertTrue(true);
+        } catch (NoAlertPresentException Ex) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    void teacher_signup_missing_edu() {
+        driver.get("http://localhost:8080/2/teacher/signup.jsp");
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        WebElement email;
+        email = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("emailField")));
+        WebElement name;
+        name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nameField")));
+        Select edu = new Select(driver.findElement(By.id("eduField")));
+        WebElement button;
+        button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
+        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
+
+        assertEquals("Teacher signup", driver.getTitle());
+
+        String inputEmail = "test@test.com";
+
+        email.sendKeys(inputEmail);
+        name.sendKeys("test");
+        button.click();
+
+        //We should check if the user is being created - Can be done with the following API call
+        //http://localhost:8080/2/api/teacher/status/{email}
+
+        try {
+            driver.switchTo().alert();
+            assertTrue(true);
+        } catch (NoAlertPresentException Ex) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    void teacher_signup_duplicate() {
+        driver.get("http://localhost:8080/2/teacher/signup.jsp");
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        WebElement email;
+        email = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("emailField")));
+        WebElement name;
+        name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nameField")));
+        Select edu = new Select(driver.findElement(By.id("eduField")));
+        WebElement button;
+        button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
+        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
+
+        assertEquals("Teacher signup", driver.getTitle());
+
+        String inputEmail = getAlphaNumericString(5) + "@testy.com";
+
+        email.sendKeys(inputEmail);
+        name.sendKeys("test");
+        edu.selectByIndex(1);
+        button.click();
+
+        WebElement status;
+        status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("messagediv")));
+
+        //System.out.println(inputEmail + " " + status.getText());
+        assertEquals("SUCCESS", status.getText());
+
+        button.click();
+        //System.out.println(inputEmail + " " + status.getText());
+        assertEquals("ERROR", status.getText());
+    }
+
+    private String apiCall(String endpoint) {
+        String data = "";
+
+        try {
+            URL url = new URL(endpoint);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+//            if (conn.getResponseCode() != 200) {
+//                throw new RuntimeException("Failed : HTTP error code : "
+//                        + conn.getResponseCode());
+//            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+            String output;
+            while ((output = br.readLine()) != null) {
+                data = output;
+            }
+
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+        } catch (IOException e) {
+        }
+        return data;
+    }
+
+    public String getAlphaNumericString(int n) {
+        // chose a Character random from this String
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int) (AlphaNumericString.length()
+                    * Math.random());
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+        return sb.toString();
     }
 }
