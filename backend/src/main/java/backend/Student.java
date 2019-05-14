@@ -3,6 +3,7 @@ package backend;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class Student {
@@ -50,5 +51,14 @@ public class Student {
 
     public void addCourse(Course course){
         _courses.add(course);
+    }
+
+    public HashMap<String, Integer> getPaymentStatus() {
+        HashMap<String, Integer> paymentStatuses = new HashMap<String, Integer>();
+
+        for(Course course: _courses)
+            paymentStatuses.put(course.getName(), course.getPaymentStatus(this));
+
+        return paymentStatuses;
     }
 }
