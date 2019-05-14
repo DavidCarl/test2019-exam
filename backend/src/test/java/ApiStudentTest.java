@@ -120,23 +120,37 @@ public class ApiStudentTest {
             MockHttpRequest courseRequest = MockHttpRequest.get("student/courses/betty@gmail.com");
             MockHttpResponse coursesResponse = new MockHttpResponse();
 
+            // Non-existent student when paying for course
+            MockHttpRequest paymentEmailRequest = MockHttpRequest.post("student/payment/betty@gmail.com/french/100");
+            MockHttpResponse paymentEmailResponse = new MockHttpResponse();
+
+            // Non-existent course when paying for course
+            MockHttpRequest paymentCourseRequest = MockHttpRequest.post("student/payment/smith00@gmail.com/english/100");
+            MockHttpResponse paymentCourseResponse = new MockHttpResponse();
+
             // Invoke the requests
             dispatcher.invoke(studentEmailRequest, studentEmailResponse);
             dispatcher.invoke(courseEnrolRequest, courseEnrolResponse);
             dispatcher.invoke(courseRequest, coursesResponse);
+            dispatcher.invoke(paymentEmailRequest, paymentEmailResponse);
+            dispatcher.invoke(paymentCourseRequest, paymentCourseResponse);
 
 
             assertAll("Check status codes",
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), studentEmailResponse.getStatus()),
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), courseEnrolResponse.getStatus()),
-                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), coursesResponse.getStatus())
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), coursesResponse.getStatus()),
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), paymentEmailResponse.getStatus()),
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), paymentCourseResponse.getStatus())
 
             );
 
             assertAll("Check response body",
                     () -> assertEquals("{\"errorMessage\":\"Student with this email is not found!\"}", studentEmailResponse.getContentAsString()),
                     () -> assertEquals("{\"errorMessage\":\"Course with this name is not found!\"}", courseEnrolResponse.getContentAsString()),
-                    () -> assertEquals("{\"errorMessage\":\"Student with this email is not found!\"}", coursesResponse.getContentAsString())
+                    () -> assertEquals("{\"errorMessage\":\"Student with this email is not found!\"}", coursesResponse.getContentAsString()),
+                    () -> assertEquals("{\"errorMessage\":\"Course with this name is not found!\"}", paymentCourseResponse.getContentAsString()),
+                    () -> assertEquals("{\"errorMessage\":\"Student with this email is not found!\"}", paymentEmailResponse.getContentAsString())
 
             );
 
@@ -188,4 +202,65 @@ public class ApiStudentTest {
         }
     }
 
+    @Test
+    public void shouldPayCourse() {
+        try {
+            backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
+            StudentRepository.getInstance().add(student);
+
+            Teacher mockedTeacher = mock(Teacher.class);
+            when(mockedTeacher.isEligible()).thenReturn(true);
+
+            Topic topic = new Topic("Programming");
+            topic.addCourse("Intro programming", mockedTeacher, "101", 100);
+
+            TopicRepository.getInstance().add(topic);
+
+            topic.getCourse("Intro programming").enroll(student);
+            MockHttpRequest request = MockHttpRequest.post("student/payment/smith00@gmail.com/Intro%20programming/1");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
+
+            assertEquals("{\"leftoverMoney\":-99}", response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
+    public void shouldReturnBadRequestIfAmountIsZero() {
+        try {
+            backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
+            StudentRepository.getInstance().add(student);
+
+            Teacher mockedTeacher = mock(Teacher.class);
+            when(mockedTeacher.isEligible()).thenReturn(true);
+
+            Topic topic = new Topic("Programming");
+            topic.addCourse("Intro programming", mockedTeacher, "101", 100);
+
+            TopicRepository.getInstance().add(topic);
+
+            topic.getCourse("Intro programming").enroll(student);
+            MockHttpRequest request = MockHttpRequest.post("student/payment/smith00@gmail.com/Intro%20programming/0");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+
+            assertEquals("{\"errorMessage\":\"Payment value not acceptable!\"}", response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
 }
