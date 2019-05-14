@@ -71,4 +71,11 @@ public class Course {
 
         return leftover * -1;
     }
+
+    public Integer getPaymentStatus(Student student) {
+        if(!_coursePayments.containsKey(student.getEmail()))
+            throw new NoSuchElementException();
+
+        return _coursePayments.get(student.getEmail()) - _price;
+    }
 }

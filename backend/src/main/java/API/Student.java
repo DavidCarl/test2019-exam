@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
@@ -87,6 +88,23 @@ public class Student {
                     return Response.status(400).type(MediaType.APPLICATION_JSON)
                             .entity("{\"errorMessage\":\"Payment value not acceptable!\"}").build();
             }
+        }catch(NoSuchElementException e){
+            return Response.status(404).type(MediaType.APPLICATION_JSON)
+                    .entity("{\"errorMessage\":\"Student with this email is not found!\"}").build();
+        }
+    }
+
+    @GET
+    @Path("/paymentStatus/{email}")
+    public Response status(@PathParam("email") String email) {
+        try {
+            HashMap<String, Integer> leftoverAmounts = repository.get(email).getPaymentStatus();
+
+            Gson gsonBuilder = new GsonBuilder().create();
+            String paymentsJson = gsonBuilder.toJson(leftoverAmounts);
+
+            return Response.ok(paymentsJson, MediaType.APPLICATION_JSON).build();
+
         }catch(NoSuchElementException e){
             return Response.status(404).type(MediaType.APPLICATION_JSON)
                     .entity("{\"errorMessage\":\"Student with this email is not found!\"}").build();

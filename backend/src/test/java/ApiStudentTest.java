@@ -128,12 +128,17 @@ public class ApiStudentTest {
             MockHttpRequest paymentCourseRequest = MockHttpRequest.post("student/payment/smith00@gmail.com/english/100");
             MockHttpResponse paymentCourseResponse = new MockHttpResponse();
 
+            // Non-existent student when checking payment statuses
+            MockHttpRequest paymentStatusRequest = MockHttpRequest.get("student/paymentStatus/betty@gmail.com");
+            MockHttpResponse paymentStatusResponse = new MockHttpResponse();
+
             // Invoke the requests
             dispatcher.invoke(studentEmailRequest, studentEmailResponse);
             dispatcher.invoke(courseEnrolRequest, courseEnrolResponse);
             dispatcher.invoke(courseRequest, coursesResponse);
             dispatcher.invoke(paymentEmailRequest, paymentEmailResponse);
             dispatcher.invoke(paymentCourseRequest, paymentCourseResponse);
+            dispatcher.invoke(paymentStatusRequest, paymentStatusResponse);
 
 
             assertAll("Check status codes",
@@ -141,7 +146,8 @@ public class ApiStudentTest {
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), courseEnrolResponse.getStatus()),
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), coursesResponse.getStatus()),
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), paymentEmailResponse.getStatus()),
-                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), paymentCourseResponse.getStatus())
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), paymentCourseResponse.getStatus()),
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), paymentStatusResponse.getStatus())
 
             );
 
@@ -150,7 +156,8 @@ public class ApiStudentTest {
                     () -> assertEquals("{\"errorMessage\":\"Course with this name is not found!\"}", courseEnrolResponse.getContentAsString()),
                     () -> assertEquals("{\"errorMessage\":\"Student with this email is not found!\"}", coursesResponse.getContentAsString()),
                     () -> assertEquals("{\"errorMessage\":\"Course with this name is not found!\"}", paymentCourseResponse.getContentAsString()),
-                    () -> assertEquals("{\"errorMessage\":\"Student with this email is not found!\"}", paymentEmailResponse.getContentAsString())
+                    () -> assertEquals("{\"errorMessage\":\"Student with this email is not found!\"}", paymentEmailResponse.getContentAsString()),
+                    () -> assertEquals("{\"errorMessage\":\"Student with this email is not found!\"}", paymentStatusResponse.getContentAsString())
 
             );
 
@@ -258,6 +265,45 @@ public class ApiStudentTest {
             assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
 
             assertEquals("{\"errorMessage\":\"Payment value not acceptable!\"}", response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
+    public void shouldGetCoursesPaymentsForStudent() {
+        try {
+            backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
+            StudentRepository.getInstance().add(student);
+
+            Teacher mockedTeacher = mock(Teacher.class);
+            when(mockedTeacher.isEligible()).thenReturn(true);
+
+            Topic topic = new Topic("Programming");
+            topic.addCourse("Intro programming", mockedTeacher, "101", 100);
+            topic.addCourse("Advanced programming", mockedTeacher, "102", 200);
+            topic.addCourse("Expert programming", mockedTeacher, "103", 300);
+
+            topic.getCourse("Intro programming").enroll(student);
+            topic.getCourse("Advanced programming").enroll(student);
+            topic.getCourse("Expert programming").enroll(student);
+
+            TopicRepository.getInstance().add(topic);
+
+            Gson gsonBuilder = new GsonBuilder().create();
+            String paymentsJson = gsonBuilder.toJson(student.getPaymentStatus());
+
+            MockHttpRequest request = MockHttpRequest.get("student/paymentStatus/smith00@gmail.com");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+            assertEquals(paymentsJson, response.getContentAsString());
 
         } catch (URISyntaxException e) {
             fail("The test URL isn't correct.");
