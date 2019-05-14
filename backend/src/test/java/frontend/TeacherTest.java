@@ -60,7 +60,6 @@ public class TeacherTest {
         Select edu = new Select(driver.findElement(By.id("eduField")));
         WebElement button;
         button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
-        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
 
         assertEquals("Teacher signup", driver.getTitle());
 
@@ -71,11 +70,10 @@ public class TeacherTest {
         edu.selectByIndex(1);
         button.click();
 
-        //We should check if the user is being created - Can be done with the following API call
-        //http://localhost:8080/2/api/teacher/status/{email}
+        WebElement status;
+        status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("messagediv")));
 
-        String output = apiCall("http://localhost:8080/2/api/teacher/status/" + inputEmail);
-        assertEquals("{\"isEligible\": true}", output);
+        assertEquals("SUCCESS", status.getText());
     }
 
     @Test
@@ -89,7 +87,6 @@ public class TeacherTest {
         Select edu = new Select(driver.findElement(By.id("eduField")));
         WebElement button;
         button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
-        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
 
         assertEquals("Teacher signup", driver.getTitle());
 
@@ -99,9 +96,6 @@ public class TeacherTest {
         name.sendKeys("");
         edu.selectByIndex(1);
         button.click();
-
-        //We should check if the user is being created - Can be done with the following API call
-        //http://localhost:8080/2/api/teacher/status/{email}
 
         try {
             driver.switchTo().alert();
@@ -122,7 +116,6 @@ public class TeacherTest {
         Select edu = new Select(driver.findElement(By.id("eduField")));
         WebElement button;
         button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
-        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
 
         assertEquals("Teacher signup", driver.getTitle());
 
@@ -132,9 +125,6 @@ public class TeacherTest {
         name.sendKeys("test");
         edu.selectByIndex(1);
         button.click();
-
-        //We should check if the user is being created - Can be done with the following API call
-        //http://localhost:8080/2/api/teacher/status/{email}
 
         try {
             driver.switchTo().alert();
@@ -155,7 +145,6 @@ public class TeacherTest {
         Select edu = new Select(driver.findElement(By.id("eduField")));
         WebElement button;
         button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
-        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
 
         assertEquals("Teacher signup", driver.getTitle());
 
@@ -164,9 +153,6 @@ public class TeacherTest {
         email.sendKeys(inputEmail);
         name.sendKeys("test");
         button.click();
-
-        //We should check if the user is being created - Can be done with the following API call
-        //http://localhost:8080/2/api/teacher/status/{email}
 
         try {
             driver.switchTo().alert();
@@ -187,7 +173,6 @@ public class TeacherTest {
         Select edu = new Select(driver.findElement(By.id("eduField")));
         WebElement button;
         button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signupbutton")));
-        //edu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eduField")));
 
         assertEquals("Teacher signup", driver.getTitle());
 
@@ -201,11 +186,9 @@ public class TeacherTest {
         WebElement status;
         status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("messagediv")));
 
-        //System.out.println(inputEmail + " " + status.getText());
         assertEquals("SUCCESS", status.getText());
 
         button.click();
-        //System.out.println(inputEmail + " " + status.getText());
         assertEquals("ERROR", status.getText());
     }
 
@@ -217,11 +200,6 @@ public class TeacherTest {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
-
-//            if (conn.getResponseCode() != 200) {
-//                throw new RuntimeException("Failed : HTTP error code : "
-//                        + conn.getResponseCode());
-//            }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
