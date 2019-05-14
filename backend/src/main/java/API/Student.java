@@ -50,7 +50,7 @@ public class Student {
 
     }
 
-    @GET // This annotation indicates GET request
+    @GET
     @Path("/courses/{email}")
     public Response courses(@PathParam("email") String email) {
         try {
@@ -66,4 +66,30 @@ public class Student {
         }
     }
 
+    @POST
+    @Path("/payment/{email}/{courseName}/{amount}")
+    public Response payment(@PathParam("email") String email, @PathParam("courseName") String courseName, @PathParam("amount") int amount) {
+        try{
+            backend.Student student = repository.get(email);
+
+            try {
+                Course course = TopicRepository.getInstance().getCourse(courseName);
+                int leftover = course.acceptPayment(student, amount);
+
+                return Response.status(202)
+                        .entity("{\"leftoverMoney\":" + leftover + "}").build();
+
+            }catch(Exception e){
+                if(e.getClass().equals(NoSuchElementException.class))
+                    return Response.status(404).type(MediaType.APPLICATION_JSON)
+                            .entity("{\"errorMessage\":\"Course with this name is not found!\"}").build();
+                else
+                    return Response.status(400).type(MediaType.APPLICATION_JSON)
+                            .entity("{\"errorMessage\":\"Payment value not acceptable!\"}").build();
+            }
+        }catch(NoSuchElementException e){
+            return Response.status(404).type(MediaType.APPLICATION_JSON)
+                    .entity("{\"errorMessage\":\"Student with this email is not found!\"}").build();
+        }
+    }
 }
