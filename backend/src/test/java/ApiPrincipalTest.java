@@ -60,4 +60,34 @@ public class ApiPrincipalTest {
             fail("The test URL isn't correct.");
         }
     }
+
+    @Test
+    public void shouldGetStudents() {
+        try {
+            backend.Student student1 = new backend.Student("Eliza", "Cook", "30-01-1999", "cook99@gmail.com");
+            backend.Student student2 = new backend.Student("Thomas", "Log", "15-05-2000", "logthom@gmail.com");
+            backend.Student student3 = new backend.Student("George", "Smith", "03-10-1990", "georg@gmail.com");
+
+            StudentRepository.getInstance().add(student1);
+            StudentRepository.getInstance().add(student2);
+            StudentRepository.getInstance().add(student3);
+
+            Gson gsonBuilder = new GsonBuilder().create();
+            String studentsJson = gsonBuilder.toJson(StudentRepository.getInstance().getAllStudents());
+
+            MockHttpRequest request = MockHttpRequest.get("principal/students");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+            assertEquals(studentsJson, response.getContentAsString());
+        }
+        catch (URISyntaxException e){
+            fail("The test URL isn't correct.");
+        }
+    }
 }
