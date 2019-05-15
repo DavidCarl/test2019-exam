@@ -1,5 +1,6 @@
 package backend;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -48,5 +49,9 @@ public class TopicRepository {
 
     public void empty() {
         topics.clear();
+    }
+
+    public Collection<Topic> getAllTopics() {
+        return topics.values();
     }
 }
