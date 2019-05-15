@@ -6,7 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -46,5 +48,15 @@ public class Principal {
         Gson gsonBuilder = new GsonBuilder().create();
         String topicsJson = gsonBuilder.toJson(topicRepository.getAllCourses());
         return Response.ok(topicsJson, MediaType.APPLICATION_JSON).build();
+    }
+
+    @POST
+    @Path("/register/addTopic/{name}")
+    public Response addTopic(@PathParam("name") String topicName) {
+
+        if(topicRepository.add(topicName))
+            return Response.status(201).build();
+        else
+            return Response.status(409).entity("{\"errorMessage\":\"Topic with this name is already present in the system!\"}").build();
     }
 }

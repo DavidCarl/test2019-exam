@@ -31,6 +31,7 @@ public class ApiPrincipalTest {
 
         TeacherRepository.getInstance().empty();
         StudentRepository.getInstance().empty();
+        TopicRepository.getInstance().empty();
     }
 
     @Test
@@ -136,16 +137,16 @@ public class ApiPrincipalTest {
             Teacher mockedTeacher2 = mock(Teacher.class);
             when(mockedTeacher1.isEligible()).thenReturn(true);
             when(mockedTeacher2.isEligible()).thenReturn(true);
-            
+
             topic1.addCourse("French", mockedTeacher1, "107", 100);
             topic1.addCourse("English", mockedTeacher1, "200", 150);
             topic1.addCourse("Danish", mockedTeacher1, "203", 130);
             topic1.addCourse("Spanish", mockedTeacher2, "503", 300);
-            
+
             topic2.addCourse("Swimming", mockedTeacher1, "333", 200);
             topic2.addCourse("Jogging", mockedTeacher1, "334", 200);
             topic2.addCourse("Running", mockedTeacher2, "335", 200);
-            
+
             Gson gsonBuilder = new GsonBuilder().create();
             String coursesJson = gsonBuilder.toJson(TopicRepository.getInstance().getAllCourses());
 
@@ -159,8 +160,47 @@ public class ApiPrincipalTest {
             assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
             assertEquals(coursesJson, response.getContentAsString());
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
         }
-        catch (URISyntaxException e){
+    }
+    @Test
+    public void shouldRegisterNewTopicWithSuccess(){
+        try {
+            MockHttpRequest request = MockHttpRequest.post("principal/register/addTopic/Arts");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+            assertTrue(TopicRepository.getInstance().getAllTopics().size() == 1);
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
+    public void shouldReturnConflictIfTopicExists(){
+        try {
+
+            Topic topic1 = new Topic("Science");
+            TopicRepository.getInstance().add(topic1);
+
+            MockHttpRequest request = MockHttpRequest.post("principal/register/addTopic/Science");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
+            assertTrue(TopicRepository.getInstance().getAllTopics().size() == 1);
+            assertEquals("{\"errorMessage\":\"Topic with this name is already present in the system!\"}", response.getContentAsString());
+
+        } catch (URISyntaxException e) {
             fail("The test URL isn't correct.");
         }
     }

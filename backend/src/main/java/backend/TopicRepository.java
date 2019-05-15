@@ -25,6 +25,12 @@ public class TopicRepository {
         return true;
     }
 
+    public boolean add(String topicName){
+        Topic topic = new Topic(topicName);
+
+        return add(topic);
+    }
+
     public void remove(String name){
         if(!topics.containsKey(name.toLowerCase()))
             throw new NoSuchElementException();
