@@ -123,35 +123,4 @@ public class ApiPrincipalTest {
             fail("The test URL isn't correct.");
         }
     }
-
-    @Test
-    public void shouldGetTopics() {
-        try {
-
-            Topic topic1 = new Topic("Language");
-            Topic topic2 = new Topic("Motion");
-            Topic topic3 = new Topic("Science");
-
-            TopicRepository.getInstance().add(topic1);
-            TopicRepository.getInstance().add(topic2);
-            TopicRepository.getInstance().add(topic3);
-
-            Gson gsonBuilder = new GsonBuilder().create();
-            String topicsJson = gsonBuilder.toJson(TopicRepository.getInstance().getAllTopics());
-
-            MockHttpRequest request = MockHttpRequest.get("principal/topics");
-            MockHttpResponse response = new MockHttpResponse();
-
-            // Invoke the request
-            dispatcher.invoke(request, response);
-
-            // Check the status code
-            assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-
-            assertEquals(topicsJson, response.getContentAsString());
-        }
-        catch (URISyntaxException e){
-            fail("The test URL isn't correct.");
-        }
-    }
 }
