@@ -1,8 +1,5 @@
 import API.Principal;
-import backend.StudentRepository;
-import backend.TeacherRepository;
-import backend.Topic;
-import backend.TopicRepository;
+import backend.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.resteasy.core.Dispatcher;
@@ -17,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ApiPrincipalTest {
 
@@ -118,6 +117,48 @@ public class ApiPrincipalTest {
             assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
             assertEquals(topicsJson, response.getContentAsString());
+        }
+        catch (URISyntaxException e){
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
+    public void shouldGetCourses() {
+        try {
+
+            Topic topic1 = new Topic("Language");
+            Topic topic2 = new Topic("Motion");
+            TopicRepository.getInstance().add(topic1);
+            TopicRepository.getInstance().add(topic2);
+
+            Teacher mockedTeacher1 = mock(Teacher.class);
+            Teacher mockedTeacher2 = mock(Teacher.class);
+            when(mockedTeacher1.isEligible()).thenReturn(true);
+            when(mockedTeacher2.isEligible()).thenReturn(true);
+            
+            topic1.addCourse("French", mockedTeacher1, "107", 100);
+            topic1.addCourse("English", mockedTeacher1, "200", 150);
+            topic1.addCourse("Danish", mockedTeacher1, "203", 130);
+            topic1.addCourse("Spanish", mockedTeacher2, "503", 300);
+            
+            topic2.addCourse("Swimming", mockedTeacher1, "333", 200);
+            topic2.addCourse("Jogging", mockedTeacher1, "334", 200);
+            topic2.addCourse("Running", mockedTeacher2, "335", 200);
+            
+            Gson gsonBuilder = new GsonBuilder().create();
+            String coursesJson = gsonBuilder.toJson(TopicRepository.getInstance().getAllCourses());
+
+            MockHttpRequest request = MockHttpRequest.get("principal/courses");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+            assertEquals(coursesJson, response.getContentAsString());
         }
         catch (URISyntaxException e){
             fail("The test URL isn't correct.");

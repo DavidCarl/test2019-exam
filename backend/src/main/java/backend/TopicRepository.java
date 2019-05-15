@@ -1,5 +1,6 @@
 package backend;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
@@ -53,5 +54,15 @@ public class TopicRepository {
 
     public Collection<Topic> getAllTopics() {
         return topics.values();
+    }
+
+    public Collection<Course> getAllCourses(){
+        ArrayList<Course> courses = new ArrayList<Course>();
+
+        for(Topic topic: topics.values()){
+            courses.addAll(topic.getCourses());
+        }
+
+        return courses;
     }
 }

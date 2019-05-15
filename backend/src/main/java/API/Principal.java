@@ -39,4 +39,12 @@ public class Principal {
         String topicsJson = gsonBuilder.toJson(topicRepository.getAllTopics());
         return Response.ok(topicsJson, MediaType.APPLICATION_JSON).build();
     }
+
+    @GET
+    @Path("/courses")
+    public Response courses() {
+        Gson gsonBuilder = new GsonBuilder().create();
+        String topicsJson = gsonBuilder.toJson(topicRepository.getAllCourses());
+        return Response.ok(topicsJson, MediaType.APPLICATION_JSON).build();
+    }
 }
