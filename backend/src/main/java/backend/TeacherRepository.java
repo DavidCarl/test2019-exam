@@ -1,6 +1,8 @@
 package backend;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 
 public class TeacherRepository {
@@ -48,5 +50,9 @@ public class TeacherRepository {
 
     public void empty(){
         teachers.clear();
+    }
+
+    public Collection<Teacher> getAllTeachers() {
+        return teachers.values();
     }
 }

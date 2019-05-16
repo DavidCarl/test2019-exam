@@ -1,5 +1,7 @@
 package backend;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -15,23 +17,36 @@ public class TopicRepository {
         return SINGLE_INSTANCE;
     }
 
-    public boolean add(Topic t) {
-        if(topics.containsKey(t.getName().toLowerCase()))
+    public boolean add(Topic topic) {
+        if(topics.containsKey(topic.getName().toLowerCase()))
             return false;
 
-        topics.put(t.getName().toLowerCase(), t);
+        topics.put(topic.getName().toLowerCase(), topic);
         return true;
     }
 
-    public void remove(String name){
-        if(!topics.containsKey(name.toLowerCase()))
+    public boolean add(String topicName){
+        Topic topic = new Topic(topicName);
+
+        return add(topic);
+    }
+
+    public void remove(String topicName){
+        if(!topics.containsKey(topicName.toLowerCase()))
             throw new NoSuchElementException();
 
-        topics.remove(name.toLowerCase());
+        topics.remove(topicName.toLowerCase());
     }
 
     public int size() {
         return topics.size();
+    }
+
+    public Topic getTopic(String topicName){
+        if(!topics.containsKey(topicName.toLowerCase()))
+            throw new NoSuchElementException();
+
+        return topics.get(topicName.toLowerCase());
     }
 
     public Course getCourse(String courseName){
@@ -48,5 +63,19 @@ public class TopicRepository {
 
     public void empty() {
         topics.clear();
+    }
+
+    public Collection<Topic> getAllTopics() {
+        return topics.values();
+    }
+
+    public Collection<Course> getAllCourses(){
+        ArrayList<Course> courses = new ArrayList<Course>();
+
+        for(Topic topic: topics.values()){
+            courses.addAll(topic.getCourses());
+        }
+
+        return courses;
     }
 }

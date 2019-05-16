@@ -11,6 +11,7 @@ public class apicontroller extends Application {
         singletons.add(new test());
         singletons.add(new Teacher());
         singletons.add(new Student());
+        singletons.add(new Principal());
     }
     @Override
     public Set<Object> getSingletons() {
