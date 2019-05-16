@@ -74,7 +74,7 @@ public class StudentTest {
         fname.sendKeys("testy");
         lname.sendKeys("McTesty");
         birthDate.click();
-        birthDate.sendKeys("1996-10-04");//"10-04-1996"
+        birthDate.sendKeys("1996-10-04");
         button.click();
 
         WebElement status;
@@ -106,7 +106,7 @@ public class StudentTest {
         fname.sendKeys("");
         lname.sendKeys("McTesty");
         birthDate.click();
-        birthDate.sendKeys("1996-10-04");//"10-04-1996"
+        birthDate.sendKeys("1996-10-04");
         button.click();
 
         WebElement status;
@@ -138,7 +138,7 @@ public class StudentTest {
         fname.sendKeys("Test");
         lname.sendKeys("");
         birthDate.click();
-        birthDate.sendKeys("1996-10-04");//"10-04-1996"
+        birthDate.sendKeys("1996-10-04");
         button.click();
 
         WebElement status;
@@ -170,7 +170,7 @@ public class StudentTest {
         fname.sendKeys("test");
         lname.sendKeys("McTesty");
         birthDate.click();
-        birthDate.sendKeys("1996-10-04");//"10-04-1996"
+        birthDate.sendKeys("1996-10-04");
         button.click();
 
         WebElement status;
@@ -234,7 +234,7 @@ public class StudentTest {
         fname.sendKeys("Test");
         lname.sendKeys("McTesty");
         birthDate.click();
-        birthDate.sendKeys("1996-10-04");//"10-04-1996"
+        birthDate.sendKeys("1996-10-04");
         button.click();
 
         WebElement status;

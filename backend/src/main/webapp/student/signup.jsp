@@ -19,7 +19,7 @@ Last Name: <input type="text" id="lastNameField"/>
 <br/>
 Birthdate: <input type="date" id="birthdayField">
 <br/>
-<button onclick="studentsignup()" id="signupbutton">Click me :)</button>
+<button onclick="studentsignup()" id="signupbutton">Register</button>
 <div id="messagediv"></div>
 <script src="../javascript/student.js"></script>
 </body>

@@ -22,17 +22,6 @@ function studentsignup(){
     }
 }
 
-function get_api(endpoint){
-    fetch(endpoint)
-        .then(function(response) {
-            console.log(response);
-            return response.json();
-        })
-        .then(function(myJson) {
-            console.log(JSON.stringify(myJson));
-        });
-}
-
 function post_api(endpoint, data){
     var messagediv = document.getElementById('messagediv')
     fetch(endpoint, {
@@ -42,7 +31,6 @@ function post_api(endpoint, data){
         }
     })
     .then(function (response) {
-        console.log('Request success: ', response);
         if(response.status !== 201){
             messagediv.textContent = 'ERROR';
         }else{
