@@ -17,11 +17,11 @@ public class TopicRepository {
         return SINGLE_INSTANCE;
     }
 
-    public boolean add(Topic t) {
-        if(topics.containsKey(t.getName().toLowerCase()))
+    public boolean add(Topic topic) {
+        if(topics.containsKey(topic.getName().toLowerCase()))
             return false;
 
-        topics.put(t.getName().toLowerCase(), t);
+        topics.put(topic.getName().toLowerCase(), topic);
         return true;
     }
 
@@ -31,11 +31,11 @@ public class TopicRepository {
         return add(topic);
     }
 
-    public void remove(String name){
-        if(!topics.containsKey(name.toLowerCase()))
+    public void remove(String topicName){
+        if(!topics.containsKey(topicName.toLowerCase()))
             throw new NoSuchElementException();
 
-        topics.remove(name.toLowerCase());
+        topics.remove(topicName.toLowerCase());
     }
 
     public int size() {
