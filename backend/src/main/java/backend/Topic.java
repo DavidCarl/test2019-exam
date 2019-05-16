@@ -10,7 +10,7 @@ public class Topic {
     private HashMap<String, Course> courses;
 
     public Topic(String name) {
-        _name = name;
+        _name = name.toLowerCase();
         courses = new HashMap<String, Course>();
     }
 
@@ -22,7 +22,7 @@ public class Topic {
         if(courses.containsKey(name.toLowerCase()) || !teacher.isEligible() || price < 0)
             return false;
 
-        Course newCourse = new Course(name, teacher, roomNr, price);
+        Course newCourse = new Course(name.toLowerCase(), teacher, roomNr, price);
         courses.put(name.toLowerCase(), newCourse);
         // ex: TopicName.CourseName
         //teacher.addCourse(_name + "." + name);
@@ -48,7 +48,9 @@ public class Topic {
             throw new NoSuchElementException();
     }
 
-    public void enrollToCourse(String courseName, Student student) {
+    public void enrollToCourse(String name, Student student) {
+        String courseName = name.toLowerCase();
+
         Course course = getCourse(courseName);
         try
         {

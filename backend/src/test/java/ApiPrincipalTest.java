@@ -8,6 +8,7 @@ import org.jboss.resteasy.mock.MockHttpRequest;
 import org.jboss.resteasy.mock.MockHttpResponse;
 import org.jboss.resteasy.plugins.server.resourcefactory.POJOResourceFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
@@ -203,5 +204,105 @@ public class ApiPrincipalTest {
         } catch (URISyntaxException e) {
             fail("The test URL isn't correct.");
         }
+    }
+
+    @Test
+    public void shouldRegisterNewCourseWithSuccess(){
+        try {
+            backend.Teacher teacher= new Teacher("Lucy Bonche", "lycy1234@gmail.com", "Teacher edu");
+            TeacherRepository.getInstance().add(teacher);
+
+            TopicRepository.getInstance().add("Sciences");
+
+            MockHttpRequest request = MockHttpRequest.post("principal/register/addCourse/Biology/Sciences/342/lycy1234@gmail.com/300");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+
+            assertDoesNotThrow(() -> {
+                TopicRepository.getInstance().getCourse("Biology");
+            });
+
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
+    public void shouldReturnConflictIfCourseExists(){
+        try {
+
+            backend.Teacher teacher= new Teacher("Bent Bonche", "bent4321@gmail.com", "Teacher edu");
+            TeacherRepository.getInstance().add(teacher);
+
+            backend.Topic sciencesTopic = new Topic("Sciences");
+            TopicRepository.getInstance().add(sciencesTopic);
+
+            sciencesTopic.addCourse("biology", teacher, "524", 200);
+
+            MockHttpRequest request = MockHttpRequest.post("principal/register/addCourse/Biology/Sciences/342/bent4321@gmail.com/300");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
+            assertTrue(TopicRepository.getInstance().getAllCourses().size() == 1);
+            assertEquals("{\"errorMessage\":\"Course with this name is already present in the system!\"}", response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
+    public void shouldReturnNotFoundWithNonExistentData(){
+        try{
+            backend.Teacher teacher= new Teacher("Tino Sammson", "t.samson@gmail.com", "Teacher edu");
+            TeacherRepository.getInstance().add(teacher);
+
+            TopicRepository.getInstance().add("Arts");
+
+            // Non-existent topic
+            MockHttpRequest topicRequest = MockHttpRequest.post("principal/register/addCourse/Swimming/Motion/102/t.samson@gmail.com/300");
+            MockHttpResponse topicResponse = new MockHttpResponse();
+
+            // Non-existent teacher
+            MockHttpRequest teacherRequest = MockHttpRequest.post("principal/register/addCourse/Music/Arts/342/nonexistent@gmail.com/102");
+            MockHttpResponse teacherResponse = new MockHttpResponse();
+
+
+            // Invoke the requests
+            dispatcher.invoke(topicRequest, topicResponse);
+            dispatcher.invoke(teacherRequest, teacherResponse);
+
+
+            assertAll("Check status codes",
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), topicResponse.getStatus()),
+                    () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), teacherResponse.getStatus())
+
+            );
+
+            assertAll("Check response body",
+                    () -> assertEquals("{\"errorMessage\":\"Topic with this name is not found in the system!\"}", topicResponse.getContentAsString()),
+                    () -> assertEquals("{\"errorMessage\":\"Teacher with this email is not registered in the system!\"}", teacherResponse.getContentAsString())
+
+            );
+
+        } catch (URISyntaxException e) {
+            fail("The test URLs aren't correct.");
+        }
+    }
+
+    @Test @Disabled
+    public void shouldReturnBadRequestWhenInvalidData(){
+
+        //TODO: Test if a bad request is received if data validator fails to validate course's data
     }
 }

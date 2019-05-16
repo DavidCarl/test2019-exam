@@ -42,6 +42,13 @@ public class TopicRepository {
         return topics.size();
     }
 
+    public Topic getTopic(String topicName){
+        if(!topics.containsKey(topicName.toLowerCase()))
+            throw new NoSuchElementException();
+
+        return topics.get(topicName.toLowerCase());
+    }
+
     public Course getCourse(String courseName){
 
         for(Topic topic: topics.values()){
