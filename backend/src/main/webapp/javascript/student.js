@@ -42,3 +42,51 @@ function post_api(endpoint, data){
         messagediv.textContent = 'ERROR';
     });
 }
+
+function studentCourses(){
+    var email = document.getElementById('emailField').value;
+    get_api('http://localhost:8080/2/api/student/courses/' + email, function(data) {insertCourses(data)});
+}
+
+//TODO remove later
+function testCouse() {
+    var courses = ['1st','2nd', '3rd'];
+    insertCourses(courses);
+}
+
+function insertCourses(data){
+    var courses = document.getElementById('courses');
+
+    // empty div for the new set of curses
+    var child = courses.lastElementChild;
+    while (child) {
+        courses.removeChild(child);
+        child = courses.lastElementChild;
+    }
+
+    for(var i in data){
+        var tmp = document.createElement("p");
+        tmp.innerText= data[i];
+        courses.appendChild(tmp);
+    }
+
+}
+
+function get_api(endpoint, next){
+    fetch(endpoint, {
+        method: 'get',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (jsonResponse) {
+            next(jsonResponse);
+        })
+        .catch(function (error) {
+            console.log('Request failure: ', error);
+            next('ERROR');
+        });
+}
