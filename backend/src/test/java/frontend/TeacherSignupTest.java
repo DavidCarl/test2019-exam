@@ -22,7 +22,7 @@ import java.net.URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TeacherTest {
+public class TeacherSignupTest {
 
     WebDriver driver;
 
