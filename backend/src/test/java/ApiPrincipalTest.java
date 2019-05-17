@@ -207,6 +207,54 @@ public class ApiPrincipalTest {
     }
 
     @Test
+    public void shouldGet406onCourseRequest() {
+        try {
+            MockHttpRequest request = MockHttpRequest.get("principal/course/this_does_not_exist");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.NOT_ACCEPTABLE.getStatusCode(), response.getStatus());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+    @Test
+    public void shouldGetCourseOnRequest(){
+        try {
+            backend.Teacher teacher = new Teacher("Lucy Bonche", "lycy1234@gmail.com", "Teacher edu");
+
+            TopicRepository tr = TopicRepository.getInstance();
+            tr.add("science");
+            tr.getTopic("science").addCourse("biology", teacher, "2", 1200);
+
+            MockHttpRequest request = MockHttpRequest.get("principal/course/biology");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+            assertDoesNotThrow(() -> {
+                TopicRepository.getInstance().getCourse("biology");
+            });
+
+            Gson gsonBuilder = new GsonBuilder().create();
+            String expectedJson = gsonBuilder.toJson(tr.getCourse("biology"));
+
+            assertEquals(expectedJson, response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
     public void shouldRegisterNewCourseWithSuccess(){
         try {
             backend.Teacher teacher= new Teacher("Lucy Bonche", "lycy1234@gmail.com", "Teacher edu");

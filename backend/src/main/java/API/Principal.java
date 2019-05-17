@@ -51,6 +51,18 @@ public class Principal {
         return Response.ok(topicsJson, MediaType.APPLICATION_JSON).build();
     }
 
+    @GET
+    @Path("/course/{name}")
+    public Response course(@PathParam("name") String courseName) {
+        try {
+            Gson gsonBuilder = new GsonBuilder().create();
+            String topicsJson = gsonBuilder.toJson(topicRepository.getCourse(courseName));
+            return Response.ok(topicsJson, MediaType.APPLICATION_JSON).build();
+        }catch (NoSuchElementException e){
+            return Response.status(406).entity("{\"errorMessage\":\"No course with the give name exist\"}").build();
+        }
+    }
+
     @POST
     @Path("/register/addTopic/{name}")
     public Response addTopic(@PathParam("name") String topicName) {
