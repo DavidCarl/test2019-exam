@@ -15,7 +15,7 @@ Enter your email: <input type="email" id="emailField"/>
 <button onclick="getInformation()" id="infobutton">Get info</button>
 <div id="messagediv"></div>
 <br/>
-<div id="nameDiv"></div>
+Name: <div id="nameDiv"></div>
 <br/>
 <div id="eligibleDiv"></div>
 <br/>
