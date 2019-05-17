@@ -309,4 +309,50 @@ public class ApiStudentTest {
             fail("The test URL isn't correct.");
         }
     }
+
+    @Test
+    public void shouldGetStudentInfo(){
+        try {
+            backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
+            StudentRepository.getInstance().add(student);
+
+            MockHttpRequest request = MockHttpRequest.get("student/info/smith00@gmail.com");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+
+            Gson gsonBuilder = new GsonBuilder().create();
+            String studentJson = gsonBuilder.toJson(student);
+
+            assertEquals(studentJson, response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
+    public void ShouldReturnBadRequestStudentInfo(){
+        try {
+            MockHttpRequest request = MockHttpRequest.get("student/info/noOne@gmail.com");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+
+            String expectedJson = "{\"errorMessage\":\"Student with this email is not found!\"}";
+            assertEquals(expectedJson, response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
 }

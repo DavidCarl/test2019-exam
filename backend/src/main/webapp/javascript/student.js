@@ -56,20 +56,103 @@ function testCouse() {
 
 function insertCourses(data){
     var courses = document.getElementById('courses');
-
+    console.log(data);
     // empty div for the new set of curses
     var child = courses.lastElementChild;
     while (child) {
         courses.removeChild(child);
         child = courses.lastElementChild;
     }
+    var tableDiv = document.createElement('table');
+
+    var tr = document.createElement('tr');
+    var headers = ['Name', 'Room nr.', 'price']
+    for(var i in headers){
+        var th = document.createElement('th');
+        th.innerText = headers[i];
+        tr.appendChild(th);
+    }
+    tableDiv.appendChild(tr);
 
     for(var i in data){
-        var tmp = document.createElement("p");
-        tmp.innerText= data[i];
-        courses.appendChild(tmp);
+        var tr = document.createElement('tr');
+        tr.className = 'course';
+        var headers = ['_name', '_roomNr', '_price']
+        for(var j in headers){
+            var td = document.createElement('td');
+            td.className = headers[j];
+            td.innerText = data[i][headers[j]];
+            tr.appendChild(td);
+        }
+        tableDiv.appendChild(tr);
+    }
+    courses.appendChild(tableDiv);
+
+    // for(var i in data){
+    //     var tmpDiv = document.createElement('div');
+    //     tmpDiv.className = 'course';
+    //
+    //     var tmp = document.createElement('p');
+    //     tmpDiv.className = 'name';
+    //     tmp.innerText= data[i]['_name'];
+    //     tmpDiv.appendChild(tmp);
+    //
+    //     var tmp = document.createElement('p');
+    //     tmpDiv.className = 'roomNr';
+    //     tmp.innerText= data[i]['_roomNr'];
+    //     tmpDiv.appendChild(tmp);
+    //
+    //     courses.appendChild(tmpDiv);
+    // }
+
+}
+
+function studentInfo() {
+    var email = document.getElementById('emailField').value;
+    get_api('http://localhost:8080/2/api/student/info/' + email, function(data) {insertStudentInfo(data)});
+}
+
+function insertStudentInfo(data) {
+    var studentInfo = document.getElementById('studentInfo');
+
+    // empty div for the new set of curses
+    var child = studentInfo.lastElementChild;
+    while (child) {
+        studentInfo.removeChild(child);
+        child = studentInfo.lastElementChild;
     }
 
+    if(data['_fName']){
+        var tmp = document.createElement('p');
+        tmp.id = 'fName';
+        tmp.innerText= 'First name: ' + data['_fName'];
+        studentInfo.appendChild(tmp);
+    }
+    if(data['_fName']){
+        var tmp = document.createElement('p');
+        tmp.id = 'lName';
+        tmp.innerText= 'Last name: ' + data['_lName'];
+        studentInfo.appendChild(tmp);
+    }
+    if(data['_fName']){
+        var tmp = document.createElement('p');
+        tmp.id = 'email';
+        tmp.innerText= 'Email: ' + data['_email'];
+        studentInfo.appendChild(tmp);
+    }
+    if(data['_fName']) {
+        var tmp = document.createElement('p');
+        tmp.id = 'birthday';
+        tmp.innerText = 'Birthday: ' + data['_birthday']['day'] + '-' + data['_birthday']['month'] + '-' + data['_birthday']['year'];
+        studentInfo.appendChild(tmp);
+    }
+    if(data['errorMessage']) {
+        var tmp = document.createElement('p');
+        tmp.id = 'error';
+        tmp.innerText = data['errorMessage'];
+        studentInfo.appendChild(tmp);
+    }
+    console.log(data);
 }
 
 function get_api(endpoint, next){

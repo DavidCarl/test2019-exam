@@ -52,6 +52,20 @@ public class Student {
     }
 
     @GET
+    @Path("/info/{email}")
+    public Response studentInformation(@PathParam("email") String email) {
+        try{
+            backend.Student student = repository.get(email);
+            Gson gsonBuilder = new GsonBuilder().create();
+            String coursesJson = gsonBuilder.toJson(student);
+            return Response.ok(coursesJson, MediaType.APPLICATION_JSON).build();
+        }catch (NoSuchElementException e){
+            return Response.status(404).type(MediaType.APPLICATION_JSON)
+                    .entity("{\"errorMessage\":\"Student with this email is not found!\"}").build();
+        }
+    }
+
+    @GET
     @Path("/courses/{email}")
     public Response courses(@PathParam("email") String email) {
         try {
