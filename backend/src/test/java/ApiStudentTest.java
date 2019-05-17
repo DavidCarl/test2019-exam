@@ -35,7 +35,7 @@ public class ApiStudentTest {
     }
 
     @Test
-    public void shouldRegisterNewStudentWithSuccess(){
+    public void shouldRegisterNewStudentWithSuccess() {
         try {
             MockHttpRequest request = MockHttpRequest.post("student/register/Betty/Williamson/25-03-1987/btWilli@gmail.com");
             MockHttpResponse response = new MockHttpResponse();
@@ -58,7 +58,7 @@ public class ApiStudentTest {
 
 
     @Test
-    public void shouldEnrolStudentInACourse(){
+    public void shouldEnrolStudentInACourse() {
         try {
 
             Topic topic = new Topic("Language");
@@ -91,8 +91,8 @@ public class ApiStudentTest {
     }
 
     @Test
-    public void shouldReturnNotFoundWithNonExistentParameterName(){
-        try{
+    public void shouldReturnNotFoundWithNonExistentParameterName() {
+        try {
 
             Topic topic = new Topic("Language");
 
@@ -166,8 +166,9 @@ public class ApiStudentTest {
         }
     }
 
-    @Test @Disabled
-    public void shouldReturnBadRequestWhenInvalidStudentData(){
+    @Test
+    @Disabled
+    public void shouldReturnBadRequestWhenInvalidStudentData() {
 
         //TODO: Test if a bad request is received if data validator fails to validate student data
     }
@@ -311,7 +312,7 @@ public class ApiStudentTest {
     }
 
     @Test
-    public void shouldGetStudentInfo(){
+    public void shouldGetStudentInfo() {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
             StudentRepository.getInstance().add(student);
@@ -337,7 +338,7 @@ public class ApiStudentTest {
     }
 
     @Test
-    public void shouldReturnBadRequestStudentInfo(){
+    public void shouldReturnBadRequestStudentInfo() {
         try {
             MockHttpRequest request = MockHttpRequest.get("student/info/noOne@gmail.com");
             MockHttpResponse response = new MockHttpResponse();

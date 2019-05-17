@@ -304,22 +304,22 @@ public class StudentTest {
         String studentFName = getAlphaNumericString(5).toLowerCase();
         String studentLName = getAlphaNumericString(5).toLowerCase();
         String studentBirthday = "10-04-1996";
-        apiCall("http://localhost:8080/2/api/student/register/"+ studentFName +"/"+ studentLName+"/"+ studentBirthday+"/"+ studentEmail, "POST");
+        apiCall("http://localhost:8080/2/api/student/register/" + studentFName + "/" + studentLName + "/" + studentBirthday + "/" + studentEmail, "POST");
 
         String teacherEmail = getAlphaNumericString(5).toLowerCase() + "@testy.com";
         String teacherName = getAlphaNumericString(5).toLowerCase();
         String teacherEducation = getAlphaNumericString(5).toLowerCase();
 
-        apiCall("http://localhost:8080/2/api/teacher/register/" + teacherName + "/"+ teacherEmail+"/"+ teacherEducation, "POST");
+        apiCall("http://localhost:8080/2/api/teacher/register/" + teacherName + "/" + teacherEmail + "/" + teacherEducation, "POST");
 
         String topic = getAlphaNumericString(5).toLowerCase();
         String courseName = getAlphaNumericString(5).toLowerCase();
         String courseRoom = getAlphaNumericString(5).toLowerCase();
         String price = "120";
 
-        apiCall("http://localhost:8080/2/api/principal/register/addTopic/"+ topic, "POST");
-        apiCall("http://localhost:8080/2/api/principal/register/addCourse/"+courseName+"/"+topic+"/"+courseRoom+"/"+teacherEmail+"/"+price, "POST");
-        apiCall("http://localhost:8080/2/api/student/enrol/"+studentEmail+"/"+courseName, "PUT");
+        apiCall("http://localhost:8080/2/api/principal/register/addTopic/" + topic, "POST");
+        apiCall("http://localhost:8080/2/api/principal/register/addCourse/" + courseName + "/" + topic + "/" + courseRoom + "/" + teacherEmail + "/" + price, "POST");
+        apiCall("http://localhost:8080/2/api/student/enrol/" + studentEmail + "/" + courseName, "PUT");
 
 
         driver.get("http://localhost:8080/2/student/panel.jsp");
@@ -351,7 +351,7 @@ public class StudentTest {
         String inputLName = getAlphaNumericString(5);
         String inputBirthday = "10-04-1996";
 
-        apiCall("http://localhost:8080/2/api/student/register/"+ inputFName +"/"+ inputLName+"/"+ inputBirthday+"/"+ inputEmail, "POST");
+        apiCall("http://localhost:8080/2/api/student/register/" + inputFName + "/" + inputLName + "/" + inputBirthday + "/" + inputEmail, "POST");
 
         driver.get("http://localhost:8080/2/student/panel.jsp");
         WebDriverWait wait = new WebDriverWait(driver, 2);
@@ -384,6 +384,7 @@ public class StudentTest {
         assertEquals("Email: " + inputEmail, infoEmail.getText());
         assertEquals("Birthday: 10-4-1996", infoBirthday.getText());
     }
+
     @Test
     void studentPanelLoadStudentInfoStudentDoesNotExsist() {
         driver.get("http://localhost:8080/2/student/panel.jsp");
