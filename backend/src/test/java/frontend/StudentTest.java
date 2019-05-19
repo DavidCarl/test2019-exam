@@ -386,7 +386,7 @@ public class StudentTest {
     }
 
     @Test
-    void student_panel_load_student_info_student_does_not_exsist() {
+    void student_panel_load_student_info_student_does_not_exist() {
         driver.get("http://localhost:8080/2/student/panel.jsp");
         WebDriverWait wait = new WebDriverWait(driver, 2);
         WebElement email;
@@ -394,7 +394,7 @@ public class StudentTest {
         WebElement button;
         button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("studentInfoButton")));
 
-        email.sendKeys("thisEmail@DoesNotExsist.com");
+        email.sendKeys("thisEmail@DoesNotExist.com");
         button.click();
 
         WebElement error;
