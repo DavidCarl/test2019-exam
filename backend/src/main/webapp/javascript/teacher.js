@@ -33,7 +33,7 @@ async function getInformation() {
             buildTable(resp_json);
         }
     }else{
-        alert('Please enter a email!')
+        alert('Please enter an email!')
     }
 }
 
