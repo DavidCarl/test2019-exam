@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: david
-  Date: 5/17/19
-  Time: 7:46 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -32,6 +25,6 @@ Price: <input type="number" id="priceField"/>
 <p>If there is nothing to select in Teacher and Topic that means there is no teachers and no topics. Please create some!</p>
 <div id="courseTable"></div>
 
-<script src="../javascript/course.js"></script>
+<script src="../javascript/principal.js"></script>
 </body>
 </html>
