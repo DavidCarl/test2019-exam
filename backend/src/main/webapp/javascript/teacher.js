@@ -95,7 +95,6 @@ async function get_api(endpoint){
             return response.json();
         })
         .then(function(myJson) {
-            console.log(myJson);
             return JSON.stringify(myJson)
         });
 }
@@ -109,7 +108,6 @@ function post_api(endpoint, data){
         }
     })
     .then(function (response) {
-        console.log('Request success: ', response);
         if(response.status !== 201){
             messagediv.textContent = 'ERROR';
         }else{
@@ -117,7 +115,6 @@ function post_api(endpoint, data){
         }
     })
     .catch(function (error) {
-        console.log('Request failure: ', error);
         messagediv.textContent = 'ERROR';
     });
 }
