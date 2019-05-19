@@ -299,7 +299,7 @@ public class StudentTest {
     }
 
     @Test
-    void studentPanelLoadCourses() {
+    void student_panel_load_courses() {
         String studentEmail = getAlphaNumericString(5).toLowerCase() + "@testy.com";
         String studentFName = getAlphaNumericString(5).toLowerCase();
         String studentLName = getAlphaNumericString(5).toLowerCase();
@@ -345,7 +345,7 @@ public class StudentTest {
     }
 
     @Test
-    void studentPanelLoadStudentInfo() {
+    void student_panel_load_student_info() {
         String inputEmail = getAlphaNumericString(5) + "@testy.com";
         String inputFName = getAlphaNumericString(5);
         String inputLName = getAlphaNumericString(5);
@@ -386,7 +386,7 @@ public class StudentTest {
     }
 
     @Test
-    void studentPanelLoadStudentInfoStudentDoesNotExsist() {
+    void student_panel_load_student_info_student_does_not_exsist() {
         driver.get("http://localhost:8080/2/student/panel.jsp");
         WebDriverWait wait = new WebDriverWait(driver, 2);
         WebElement email;

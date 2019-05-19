@@ -45,14 +45,9 @@ function post_api(endpoint, data){
 
 function studentCourses(){
     var email = document.getElementById('emailField').value;
-    get_api('http://localhost:8080/2/api/student/courses/' + email, function(data) {insertCourses(data)});
+    apiCall('http://localhost:8080/2/api/student/courses/' + email, function(data) {insertCourses(data)});
 }
 
-//TODO remove later
-function testCouse() {
-    var courses = ['1st','2nd', '3rd'];
-    insertCourses(courses);
-}
 
 function insertCourses(data){
     var courses = document.getElementById('courses');
@@ -91,7 +86,7 @@ function insertCourses(data){
 
 function studentInfo() {
     var email = document.getElementById('emailField').value;
-    get_api('http://localhost:8080/2/api/student/info/' + email, function(data) {insertStudentInfo(data)});
+    apiCall('http://localhost:8080/2/api/student/info/' + email, function(data) {insertStudentInfo(data)});
 }
 
 function insertStudentInfo(data) {
@@ -134,10 +129,9 @@ function insertStudentInfo(data) {
         tmp.innerText = data['errorMessage'];
         studentInfo.appendChild(tmp);
     }
-    console.log(data);
 }
 
-function get_api(endpoint, next){
+function apiCall(endpoint, next){
     fetch(endpoint, {
         method: 'get',
         headers:{
