@@ -19,23 +19,51 @@ function showDetails(event) {
 
 function insertData(data) {
     console.log(data);
-    // var courseDetailsDiv = document.getElementById('courseDetails');
-// //empty div
-// var child = courseDetailsDiv.lastElementChild;
-// while(child){
-//     courseDetailsDiv.removeChild(child);
-//     child = courseDetailsDiv.lastElementChild
-// }
-//
-// var tmp = document.createElement('p');
-// tmp.innerText = 'Teacher';
-// courseDetailsDiv.appendChild(tmp);
-//
-// var tmp = document.createElement('p');
-// tmp.innerText = 'Teacher';
-// courseDetailsDiv.appendChild(tmp);
+    var courseDetailsDiv = document.getElementById('courseDetails');
+//empty div
+    var child = courseDetailsDiv.lastElementChild;
+    while(child){
+        courseDetailsDiv.removeChild(child);
+        child = courseDetailsDiv.lastElementChild
+    }
 
+    var tmp = document.createElement('h4');
+    tmp.innerText = 'Teacher: ';
+    courseDetailsDiv.appendChild(tmp);
+
+    var tmp = document.createElement('p');
+    tmp.className = 'teacherName';
+    tmp.innerText = data['teacher']['name'];
+    courseDetailsDiv.appendChild(tmp);
+
+
+    var tmp = document.createElement('h4');
+    tmp.innerText = 'Course name: ';
+    courseDetailsDiv.appendChild(tmp);
+
+    var tmp = document.createElement('p');
+    tmp.className = 'courseName';
+    tmp.innerText = data['name'];
+    courseDetailsDiv.appendChild(tmp);
+
+
+    var tmp = document.createElement('h4');
+    tmp.className = 'students';
+    tmp.innerText = 'Students: ';
+    courseDetailsDiv.appendChild(tmp);
+
+    var ul = document.createElement('ul');
+    Object.keys(data['students']).forEach(
+        function (email) {
+            var li = document.createElement('li');
+            li.className = 'student';
+            li.appendChild(document.createTextNode(email));
+            ul.appendChild(li);
+        });
+    courseDetailsDiv.appendChild(ul);
 }
+
+
 
 function fill() {
     apiCall("http://localhost:8080/2/api/principal/register/addTopic/Arts", "POST", function (d) {});

@@ -22,6 +22,10 @@ public class Teacher {
         return email;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
