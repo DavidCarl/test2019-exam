@@ -12,7 +12,6 @@
 </head>
 <body>
 Email: <input type="email" id="emailField"/>
-<button onclick="testCouse()" >test</button> <%-- TODO remove later --%>
 
 <button onclick="studentCourses()" id="coursesbutton">Load Courses</button>
 <p>Attending courses:</p>

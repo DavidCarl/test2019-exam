@@ -337,7 +337,7 @@ public class ApiStudentTest {
     }
 
     @Test
-    public void ShouldReturnBadRequestStudentInfo(){
+    public void shouldReturnBadRequestStudentInfo(){
         try {
             MockHttpRequest request = MockHttpRequest.get("student/info/noOne@gmail.com");
             MockHttpResponse response = new MockHttpResponse();

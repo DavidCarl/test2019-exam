@@ -30,13 +30,21 @@ public class FrontTest {
     void main_index(){
         driver.get("http://localhost:8080/2/");
         WebDriverWait wait = new WebDriverWait(driver, 2);
+
         WebElement href;
         WebElement principal;
+        WebElement studentHref;
+        WebElement teacherHref;
         href = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("teacherHref")));
         principal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("principalHref")));
+        studentHref = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("studentHref")));
+        teacherHref = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("teacherHref")));
 
         assertEquals("here!", href.getText());
-        assertEquals("here!", href.getText());
+        assertEquals("here!", principal.getText());
+        assertEquals("here!", studentHref.getText());
+        assertEquals("here!", teacherHref.getText());
+
         assertEquals("Lyngby Evening School", driver.getTitle());
     }
 }

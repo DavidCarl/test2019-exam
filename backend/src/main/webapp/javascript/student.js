@@ -87,24 +87,6 @@ function insertCourses(data){
         tableDiv.appendChild(tr);
     }
     courses.appendChild(tableDiv);
-
-    // for(var i in data){
-    //     var tmpDiv = document.createElement('div');
-    //     tmpDiv.className = 'course';
-    //
-    //     var tmp = document.createElement('p');
-    //     tmpDiv.className = 'name';
-    //     tmp.innerText= data[i]['_name'];
-    //     tmpDiv.appendChild(tmp);
-    //
-    //     var tmp = document.createElement('p');
-    //     tmpDiv.className = 'roomNr';
-    //     tmp.innerText= data[i]['_roomNr'];
-    //     tmpDiv.appendChild(tmp);
-    //
-    //     courses.appendChild(tmpDiv);
-    // }
-
 }
 
 function studentInfo() {
