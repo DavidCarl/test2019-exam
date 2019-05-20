@@ -9,6 +9,12 @@ function topicLoad(){
     getTopics();
 }
 
+function frontPage(){
+    getCourses();
+    getStudents();
+    getTeachers();
+}
+
 async function getTeachers(){
     let teachers = await get_api('http://localhost:8080/2/api/principal/teachers/');
     buildTeacherTable(JSON.parse(teachers))
