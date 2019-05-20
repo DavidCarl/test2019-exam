@@ -12,5 +12,7 @@
 </head>
 <body>
 To signup as a student, click <a href="signup.jsp" id="signupHref">here!</a>
+<br>
+To see the student Panel, click <a href="panel.jsp" id="panelHref">here!</a>
 </body>
 </html>

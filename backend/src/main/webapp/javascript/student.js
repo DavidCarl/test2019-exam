@@ -38,7 +38,111 @@ function post_api(endpoint, data){
         }
     })
     .catch(function (error) {
-        console.log('Request failure: ', error);
         messagediv.textContent = 'ERROR';
     });
+}
+
+function studentCourses(){
+    var email = document.getElementById('emailField').value;
+    apiCall('http://localhost:8080/2/api/student/courses/' + email, function(data) {insertCourses(data)});
+}
+
+
+function insertCourses(data){
+    var courses = document.getElementById('courses');
+    // empty div for the new set of curses
+    var child = courses.lastElementChild;
+    while (child) {
+        courses.removeChild(child);
+        child = courses.lastElementChild;
+    }
+    var tableDiv = document.createElement('table');
+
+    var tr = document.createElement('tr');
+    var headers = ['Name', 'Room nr.', 'price']
+    for(var i in headers){
+        var th = document.createElement('th');
+        th.innerText = headers[i];
+        tr.appendChild(th);
+    }
+    tableDiv.appendChild(tr);
+
+    for(var i in data){
+        var tr = document.createElement('tr');
+        tr.className = 'course';
+        var headers = ['_name', '_roomNr', '_price']
+        for(var j in headers){
+            var td = document.createElement('td');
+            td.className = headers[j];
+            td.innerText = data[i][headers[j]];
+            tr.appendChild(td);
+        }
+        tableDiv.appendChild(tr);
+    }
+    courses.appendChild(tableDiv);
+}
+
+function studentInfo() {
+    var email = document.getElementById('emailField').value;
+    apiCall('http://localhost:8080/2/api/student/info/' + email, function(data) {insertStudentInfo(data)});
+}
+
+function insertStudentInfo(data) {
+    var studentInfo = document.getElementById('studentInfo');
+
+    // empty div for the new set of curses
+    var child = studentInfo.lastElementChild;
+    while (child) {
+        studentInfo.removeChild(child);
+        child = studentInfo.lastElementChild;
+    }
+
+    if(data['_fName']){
+        var tmp = document.createElement('p');
+        tmp.id = 'fName';
+        tmp.innerText= 'First name: ' + data['_fName'];
+        studentInfo.appendChild(tmp);
+    }
+    if(data['_fName']){
+        var tmp = document.createElement('p');
+        tmp.id = 'lName';
+        tmp.innerText= 'Last name: ' + data['_lName'];
+        studentInfo.appendChild(tmp);
+    }
+    if(data['_fName']){
+        var tmp = document.createElement('p');
+        tmp.id = 'email';
+        tmp.innerText= 'Email: ' + data['_email'];
+        studentInfo.appendChild(tmp);
+    }
+    if(data['_fName']) {
+        var tmp = document.createElement('p');
+        tmp.id = 'birthday';
+        tmp.innerText = 'Birthday: ' + data['_birthday']['day'] + '-' + data['_birthday']['month'] + '-' + data['_birthday']['year'];
+        studentInfo.appendChild(tmp);
+    }
+    if(data['errorMessage']) {
+        var tmp = document.createElement('p');
+        tmp.id = 'error';
+        tmp.innerText = data['errorMessage'];
+        studentInfo.appendChild(tmp);
+    }
+}
+
+function apiCall(endpoint, next){
+    fetch(endpoint, {
+        method: 'get',
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (jsonResponse) {
+            next(jsonResponse);
+        })
+        .catch(function (error) {
+            next('ERROR');
+        });
 }
