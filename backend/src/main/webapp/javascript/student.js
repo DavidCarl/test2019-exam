@@ -38,7 +38,6 @@ function post_api(endpoint, data){
         }
     })
     .catch(function (error) {
-        console.log('Request failure: ', error);
         messagediv.textContent = 'ERROR';
     });
 }
@@ -51,7 +50,6 @@ function studentCourses(){
 
 function insertCourses(data){
     var courses = document.getElementById('courses');
-    console.log(data);
     // empty div for the new set of curses
     var child = courses.lastElementChild;
     while (child) {
@@ -145,7 +143,6 @@ function apiCall(endpoint, next){
             next(jsonResponse);
         })
         .catch(function (error) {
-            console.log('Request failure: ', error);
             next('ERROR');
         });
 }
