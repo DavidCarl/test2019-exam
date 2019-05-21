@@ -1,6 +1,7 @@
 import API.Teacher;
 import backend.Course;
 import backend.ITeacherData;
+import backend.MongoTeacherCollection;
 import backend.TeacherRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,7 +43,6 @@ public class ApiTeacherTest {
     public void shouldGetCourses() {
         try {
             backend.Teacher teacher = new backend.Teacher("Lenard Lyndor", "lylly@gmail.com", "Teacher edu");
-            teacherRepo.add(teacher);
 
             Course course1 = new Course("Intro programming", teacher, "101", 100);
             Course course2 = new Course("Advanced programming", teacher, "102", 200);
@@ -51,6 +51,8 @@ public class ApiTeacherTest {
             teacher.addCourse(course1);
             teacher.addCourse(course2);
             teacher.addCourse(course3);
+
+            teacherRepo.add(teacher);
 
             Gson gsonBuilder = new GsonBuilder().create();
             String coursesJson = gsonBuilder.toJson(teacher.getTeachingCourses());
