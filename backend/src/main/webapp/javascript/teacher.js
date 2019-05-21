@@ -1,12 +1,19 @@
 function teachersignup(){
+    var messagediv = document.getElementById('messagediv');
     let emailField = document.getElementById('emailField').value;
     let nameField = document.getElementById('nameField').value;
     let eduField = document.getElementById('eduField').value;
     if(emailField !== '' && nameField !== '' && eduField !== ''){
         var list = {'email': emailField, 'name': nameField, 'edu': eduField};
         post_api('http://localhost:8080/2/api/teacher/register/' + nameField + '/' + emailField + '/' + eduField, list)
+    }else if(emailField === ''){
+        messagediv.textContent = 'Please enter an email!'
+    }else if(nameField === ''){
+        messagediv.textContent = 'Please enter a name!'
+    }else if(eduField === ''){
+        messagediv.textContent = 'Please select a education!'
     }else{
-        alert('Please fill out all fields!')
+        messagediv.textContent = 'Something went wrong!'
     }
 }
 
