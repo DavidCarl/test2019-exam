@@ -106,6 +106,10 @@ public class Teacher {
         return true;
     }
 
+    public String getName(){
+        return name;
+    }
+
     @Override
     public String toString() {
         return "Teacher{" +
