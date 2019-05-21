@@ -1,7 +1,5 @@
 package API;
-import backend.StudentRepository;
-import backend.TeacherRepository;
-import backend.TopicRepository;
+import backend.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -15,15 +13,15 @@ import java.util.NoSuchElementException;
 
 @Path("/principal")
 public class Principal {
-    TeacherRepository teacherRepository = TeacherRepository.getInstance();
-    StudentRepository studentRepository = StudentRepository.getInstance();
-    TopicRepository topicRepository = TopicRepository.getInstance();
+    ITeacherData teacherRepo = TeacherRepository.getInstance();
+    IStudentData studentRepo = StudentRepository.getInstance();
+    ITopicData topicRepo = TopicRepository.getInstance();
 
     @GET
     @Path("/teachers")
     public Response teachers() {
         Gson gsonBuilder = new GsonBuilder().create();
-        String teachersJson = gsonBuilder.toJson(teacherRepository.getAllTeachers());
+        String teachersJson = gsonBuilder.toJson(teacherRepo.getAllTeachers());
         return Response.ok(teachersJson, MediaType.APPLICATION_JSON).build();
     }
 
@@ -31,7 +29,7 @@ public class Principal {
     @Path("/students")
     public Response students() {
         Gson gsonBuilder = new GsonBuilder().create();
-        String studentsJson = gsonBuilder.toJson(studentRepository.getAllStudents());
+        String studentsJson = gsonBuilder.toJson(studentRepo.getAllStudents());
         return Response.ok(studentsJson, MediaType.APPLICATION_JSON).build();
     }
 
@@ -39,7 +37,7 @@ public class Principal {
     @Path("/topics")
     public Response topics() {
         Gson gsonBuilder = new GsonBuilder().create();
-        String topicsJson = gsonBuilder.toJson(topicRepository.getAllTopics());
+        String topicsJson = gsonBuilder.toJson(topicRepo.getAllTopics());
         return Response.ok(topicsJson, MediaType.APPLICATION_JSON).build();
     }
 
@@ -47,7 +45,7 @@ public class Principal {
     @Path("/courses")
     public Response courses() {
         Gson gsonBuilder = new GsonBuilder().create();
-        String topicsJson = gsonBuilder.toJson(topicRepository.getAllCourses());
+        String topicsJson = gsonBuilder.toJson(topicRepo.getAllCourses());
         return Response.ok(topicsJson, MediaType.APPLICATION_JSON).build();
     }
 
@@ -55,7 +53,7 @@ public class Principal {
     @Path("/register/addTopic/{name}")
     public Response addTopic(@PathParam("name") String topicName) {
 
-        if(topicRepository.add(topicName))
+        if(topicRepo.add(topicName))
             return Response.status(201).build();
         else
             return Response.status(409).entity("{\"errorMessage\":\"Topic with this name is already present in the system!\"}").build();
@@ -65,10 +63,10 @@ public class Principal {
     @Path("/register/addCourse/{courseName}/{topicName}/{roomNumber}/{teacherEmail}/{price}")
     public Response addTopic(@PathParam("courseName") String courseName, @PathParam("topicName") String topicName, @PathParam("roomNumber") String roomNumber, @PathParam("teacherEmail") String teacherEmail, @PathParam("price") int price) {
         try {
-            backend.Teacher teacher = teacherRepository.get(teacherEmail);
+            backend.Teacher teacher = teacherRepo.get(teacherEmail);
 
             try {
-                backend.Topic topic = topicRepository.getTopic(topicName);
+                backend.Topic topic = topicRepo.getTopic(topicName);
 
                 if (topic.addCourse(courseName, teacher, roomNumber, price))
                     return Response.status(201).build();

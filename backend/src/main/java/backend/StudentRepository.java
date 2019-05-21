@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
-public class StudentRepository {
+public class StudentRepository implements IStudentData {
     HashMap<String, Student> students;
     private static final StudentRepository SINGLE_INSTANCE = new StudentRepository();
 
