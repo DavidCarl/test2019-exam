@@ -20,12 +20,50 @@ function showDetails(event) {
 function insertData(data) {
     console.log(data);
     var courseDetailsDiv = document.getElementById('courseDetails');
-//empty div
+
+    //empty div
     var child = courseDetailsDiv.lastElementChild;
     while(child){
         courseDetailsDiv.removeChild(child);
         child = courseDetailsDiv.lastElementChild
     }
+    addInformation(courseDetailsDiv, data);
+    addEnrol(courseDetailsDiv, data);
+}
+
+function addEnrol(courseDetailsDiv, data) {
+    var signupDiv = document.createElement('div');
+
+    var tmp = document.createElement('h4');
+    tmp.innerText = 'Enrol';
+    signupDiv.appendChild(tmp);
+
+
+    var tmp = document.createElement('p');
+    tmp.innerText = 'Email: ';
+    signupDiv.appendChild(tmp);
+
+
+    var tmp = document.createElement('input');
+    tmp.className = 'enrolEmail';
+    signupDiv.appendChild(tmp);
+    
+    var tmp = document.createElement('button');
+    tmp.innerText = 'Signup';
+    tmp.addEventListener('click', enrol);
+    signupDiv.appendChild(tmp);
+    
+    courseDetailsDiv.appendChild(signupDiv);
+}
+
+function enrol() {
+    var email = document.getElementsByClassName('enrolEmail')[0].value;
+    var courseName = document.getElementsByClassName('courseName')[0].innerText;
+
+    apiCall('http://localhost:8080/2/api/student/enrol/'+email+'/'+courseName,'PUT', function (data) {})
+}
+
+function addInformation(courseDetailsDiv, data) {
 
     var tmp = document.createElement('h4');
     tmp.innerText = 'Teacher: ';
@@ -62,8 +100,6 @@ function insertData(data) {
         });
     courseDetailsDiv.appendChild(ul);
 }
-
-
 
 function fill() {
     apiCall("http://localhost:8080/2/api/principal/register/addTopic/Arts", "POST", function (d) {});
