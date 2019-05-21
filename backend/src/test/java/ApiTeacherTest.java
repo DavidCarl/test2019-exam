@@ -1,5 +1,6 @@
 import API.Teacher;
 import backend.Course;
+import backend.ITeacherData;
 import backend.TeacherRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +25,8 @@ public class ApiTeacherTest {
     private static Dispatcher dispatcher;
     private static POJOResourceFactory noDefaults;
 
+    private ITeacherData teacherRepo;
+
     @BeforeEach
     public void setup() {
         dispatcher = MockDispatcherFactory.createDispatcher();
@@ -31,14 +34,15 @@ public class ApiTeacherTest {
         noDefaults = new POJOResourceFactory(Teacher.class);
         dispatcher.getRegistry().addResourceFactory(noDefaults);
 
-        TeacherRepository.getInstance().empty();
+        teacherRepo = TeacherRepository.getInstance();
+        teacherRepo.empty();
     }
 
     @Test
     public void shouldGetCourses() {
         try {
             backend.Teacher teacher = new backend.Teacher("Lenard Lyndor", "lylly@gmail.com", "Teacher edu");
-            TeacherRepository.getInstance().add(teacher);
+            teacherRepo.add(teacher);
 
             Course course1 = new Course("Intro programming", teacher, "101", 100);
             Course course2 = new Course("Advanced programming", teacher, "102", 200);
@@ -82,7 +86,7 @@ public class ApiTeacherTest {
             assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
 
             assertDoesNotThrow(() -> {
-                TeacherRepository.getInstance().get("lylly@gmail.com");
+                teacherRepo.get("lylly@gmail.com");
             });
 
         } catch (URISyntaxException e) {
@@ -94,7 +98,7 @@ public class ApiTeacherTest {
     public void shouldReturnConflictIfTeacherExists(){
         try {
             backend.Teacher teacher = new backend.Teacher("Lenard Lyndor", "lylly@gmail.com", "Teacher edu");
-            TeacherRepository.getInstance().add(teacher);
+            teacherRepo.add(teacher);
 
             MockHttpRequest request = MockHttpRequest.post("teacher/register/Lenard%20Lyndor/lylly@gmail.com/Teacher%20edu");
             MockHttpResponse response = new MockHttpResponse();
@@ -124,8 +128,8 @@ public class ApiTeacherTest {
             when(mockedTeacherFalse.isEligible()).thenReturn(false);
             when(mockedTeacherFalse.getEmail()).thenReturn("subole@gmail.com");
 
-            TeacherRepository.getInstance().add(mockedTeacher);
-            TeacherRepository.getInstance().add(mockedTeacherFalse);
+            teacherRepo.add(mockedTeacher);
+            teacherRepo.add(mockedTeacherFalse);
 
 
             MockHttpRequest requestMocked = MockHttpRequest.get("teacher/status/lylly@gmail.com");
@@ -155,7 +159,7 @@ public class ApiTeacherTest {
     public void shouldUpdateEducationLevel() {
         try {
             backend.Teacher teacher = new backend.Teacher("Lenard Lyndor", "lylly@gmail.com", "Teacher edu");
-            TeacherRepository.getInstance().add(teacher);
+            teacherRepo.add(teacher);
 
             MockHttpRequest request = MockHttpRequest.put("teacher/education/lylly@gmail.com/Master-education");
             MockHttpResponse response = new MockHttpResponse();

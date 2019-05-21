@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
-public class TeacherRepository {
+public class TeacherRepository implements ITeacherData {
     HashMap<String, Teacher> teachers;
     private static final TeacherRepository SINGLE_INSTANCE = new TeacherRepository();
 

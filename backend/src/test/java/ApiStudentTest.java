@@ -23,6 +23,9 @@ public class ApiStudentTest {
     private static Dispatcher dispatcher;
     private static POJOResourceFactory noDefaults;
 
+    private ITopicData topicRepo;
+    private IStudentData studentRepo;
+
     @BeforeEach
     public void setup() {
         dispatcher = MockDispatcherFactory.createDispatcher();
@@ -30,8 +33,11 @@ public class ApiStudentTest {
         noDefaults = new POJOResourceFactory(Student.class);
         dispatcher.getRegistry().addResourceFactory(noDefaults);
 
-        StudentRepository.getInstance().empty();
-        TopicRepository.getInstance().empty();
+        topicRepo = TopicRepository.getInstance();
+        studentRepo = StudentRepository.getInstance();
+
+        topicRepo.empty();
+        studentRepo.empty();
     }
 
     @Test
@@ -48,7 +54,7 @@ public class ApiStudentTest {
             assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
 
             assertDoesNotThrow(() -> {
-                StudentRepository.getInstance().get("btWilli@gmail.com");
+                studentRepo.get("btWilli@gmail.com");
             });
 
         } catch (URISyntaxException e) {
@@ -69,10 +75,10 @@ public class ApiStudentTest {
 
             Course french = topic.getCourse("French");
 
-            TopicRepository.getInstance().add(topic);
+            topicRepo.add(topic);
 
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            StudentRepository.getInstance().add(student);
+            studentRepo.add(student);
 
             MockHttpRequest request = MockHttpRequest.put("student/enrol/smith00@gmail.com/french");
             MockHttpResponse response = new MockHttpResponse();
@@ -102,10 +108,10 @@ public class ApiStudentTest {
 
             Course french = topic.getCourse("French");
 
-            TopicRepository.getInstance().add(topic);
+            topicRepo.add(topic);
 
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            StudentRepository.getInstance().add(student);
+            studentRepo.add(student);
 
 
             // Non-existent student when enrolling
@@ -177,7 +183,7 @@ public class ApiStudentTest {
     public void shouldGetCourses() {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            StudentRepository.getInstance().add(student);
+            studentRepo.add(student);
 
             Teacher mockedTeacher = mock(Teacher.class);
             when(mockedTeacher.isEligible()).thenReturn(true);
@@ -214,7 +220,7 @@ public class ApiStudentTest {
     public void shouldPayCourse() {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            StudentRepository.getInstance().add(student);
+            studentRepo.add(student);
 
             Teacher mockedTeacher = mock(Teacher.class);
             when(mockedTeacher.isEligible()).thenReturn(true);
@@ -222,7 +228,7 @@ public class ApiStudentTest {
             Topic topic = new Topic("Programming");
             topic.addCourse("Intro programming", mockedTeacher, "101", 100);
 
-            TopicRepository.getInstance().add(topic);
+            topicRepo.add(topic);
 
             topic.getCourse("Intro programming").enroll(student);
             MockHttpRequest request = MockHttpRequest.post("student/payment/smith00@gmail.com/Intro%20programming/1");
@@ -245,7 +251,7 @@ public class ApiStudentTest {
     public void shouldReturnBadRequestIfAmountIsZero() {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            StudentRepository.getInstance().add(student);
+            studentRepo.add(student);
 
             Teacher mockedTeacher = mock(Teacher.class);
             when(mockedTeacher.isEligible()).thenReturn(true);
@@ -253,7 +259,7 @@ public class ApiStudentTest {
             Topic topic = new Topic("Programming");
             topic.addCourse("Intro programming", mockedTeacher, "101", 100);
 
-            TopicRepository.getInstance().add(topic);
+            topicRepo.add(topic);
 
             topic.getCourse("Intro programming").enroll(student);
             MockHttpRequest request = MockHttpRequest.post("student/payment/smith00@gmail.com/Intro%20programming/0");
@@ -276,7 +282,7 @@ public class ApiStudentTest {
     public void shouldGetCoursesPaymentsForStudent() {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            StudentRepository.getInstance().add(student);
+            studentRepo.add(student);
 
             Teacher mockedTeacher = mock(Teacher.class);
             when(mockedTeacher.isEligible()).thenReturn(true);
@@ -290,7 +296,7 @@ public class ApiStudentTest {
             topic.getCourse("Advanced programming").enroll(student);
             topic.getCourse("Expert programming").enroll(student);
 
-            TopicRepository.getInstance().add(topic);
+            topicRepo.add(topic);
 
             Gson gsonBuilder = new GsonBuilder().create();
             String paymentsJson = gsonBuilder.toJson(student.getPaymentStatus());
@@ -315,7 +321,7 @@ public class ApiStudentTest {
     public void shouldGetStudentInfo() {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            StudentRepository.getInstance().add(student);
+            studentRepo.add(student);
 
             MockHttpRequest request = MockHttpRequest.get("student/info/smith00@gmail.com");
             MockHttpResponse response = new MockHttpResponse();
