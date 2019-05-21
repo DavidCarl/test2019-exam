@@ -45,11 +45,12 @@ function addEnrol(courseDetailsDiv, data) {
 
 
     var tmp = document.createElement('input');
-    tmp.className = 'enrolEmail';
+    tmp.id = 'enrolEmail';
     signupDiv.appendChild(tmp);
     
     var tmp = document.createElement('button');
     tmp.innerText = 'Signup';
+    tmp.id = 'enrolBtn';
     tmp.addEventListener('click', enrol);
     signupDiv.appendChild(tmp);
     
@@ -57,8 +58,8 @@ function addEnrol(courseDetailsDiv, data) {
 }
 
 function enrol() {
-    var email = document.getElementsByClassName('enrolEmail')[0].value;
-    var courseName = document.getElementsByClassName('courseName')[0].innerText;
+    var email = document.getElementById('enrolEmail').value;
+    var courseName = document.getElementById('courseName').innerText;
 
     apiCall('http://localhost:8080/2/api/student/enrol/'+email+'/'+courseName,'PUT', function (data) {})
 }
@@ -70,7 +71,7 @@ function addInformation(courseDetailsDiv, data) {
     courseDetailsDiv.appendChild(tmp);
 
     var tmp = document.createElement('p');
-    tmp.className = 'teacherName';
+    tmp.id = 'teacherName';
     tmp.innerText = data['teacher']['name'];
     courseDetailsDiv.appendChild(tmp);
 
@@ -80,7 +81,7 @@ function addInformation(courseDetailsDiv, data) {
     courseDetailsDiv.appendChild(tmp);
 
     var tmp = document.createElement('p');
-    tmp.className = 'courseName';
+    tmp.id = 'courseName';
     tmp.innerText = data['name'];
     courseDetailsDiv.appendChild(tmp);
 
@@ -94,7 +95,7 @@ function addInformation(courseDetailsDiv, data) {
     Object.keys(data['students']).forEach(
         function (email) {
             var li = document.createElement('li');
-            li.className = 'student';
+            li.className = 'studentEmail';
             li.appendChild(document.createTextNode(email));
             ul.appendChild(li);
         });
