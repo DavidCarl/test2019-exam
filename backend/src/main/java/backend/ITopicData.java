@@ -4,7 +4,12 @@ import java.util.Collection;
 
 public interface ITopicData {
     boolean add(Topic topic);
-    boolean add(String topicName);
+
+    default boolean add(String topicName){
+        Topic t = new Topic(topicName);
+        return add(t);
+    }
+
     void remove(String topicName);
     int size();
     Topic getTopic(String topicName);

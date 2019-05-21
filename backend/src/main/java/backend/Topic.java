@@ -59,7 +59,7 @@ public class Topic {
         catch (IndexOutOfBoundsException exception)
         {
             String newCourseName = courseName + " I";
-            addCourse(newCourseName,course.getTeacher(),course.getRoomNr()+1,course.getCoursePrice());
+            addCourse(newCourseName,course.getTeacher(),course.getRoomNr()+1,course.getPrice());
 
             enrollToCourse(newCourseName, student);
         }

@@ -183,7 +183,6 @@ public class ApiStudentTest {
     public void shouldGetCourses() {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            studentRepo.add(student);
 
             Teacher mockedTeacher = mock(Teacher.class);
             when(mockedTeacher.isEligible()).thenReturn(true);
@@ -196,6 +195,8 @@ public class ApiStudentTest {
             topic.getCourse("Intro programming").enroll(student);
             topic.getCourse("Advanced programming").enroll(student);
             topic.getCourse("Expert programming").enroll(student);
+
+            studentRepo.add(student);
 
             Gson gsonBuilder = new GsonBuilder().create();
             String coursesJson = gsonBuilder.toJson(student.getCourses());
@@ -251,7 +252,7 @@ public class ApiStudentTest {
     public void shouldReturnBadRequestIfAmountIsZero() {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
-            studentRepo.add(student);
+
 
             Teacher mockedTeacher = mock(Teacher.class);
             when(mockedTeacher.isEligible()).thenReturn(true);
@@ -259,9 +260,11 @@ public class ApiStudentTest {
             Topic topic = new Topic("Programming");
             topic.addCourse("Intro programming", mockedTeacher, "101", 100);
 
-            topicRepo.add(topic);
+
 
             topic.getCourse("Intro programming").enroll(student);
+            studentRepo.add(student);
+            topicRepo.add(topic);
             MockHttpRequest request = MockHttpRequest.post("student/payment/smith00@gmail.com/Intro%20programming/0");
             MockHttpResponse response = new MockHttpResponse();
 

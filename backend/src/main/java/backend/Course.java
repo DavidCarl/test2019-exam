@@ -10,7 +10,7 @@ public class Course {
     private transient Teacher _teacher;
     private String _roomNr;
     private int _price;
-    private HashMap<String, Integer> _coursePayments;
+    private transient HashMap<String, Integer> _coursePayments;
 
     public Course(String name, Teacher teacher, String roomNr, int price) {
         _name = name;
@@ -32,7 +32,7 @@ public class Course {
         return _roomNr;
     }
 
-    public int getCoursePrice() {
+    public int getPrice() {
         return _price;
     }
 

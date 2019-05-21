@@ -23,12 +23,6 @@ public class StudentRepository implements IStudentData {
         return true;
     }
 
-    public boolean add(String fName, String lName, String birthday, String email) {
-        Student student = new Student(fName, lName, birthday, email);
-
-        return add(student);
-    }
-
     public Student get(String email){
         if(!students.containsKey(email))
             throw new NoSuchElementException();

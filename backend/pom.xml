@@ -82,6 +82,12 @@
             <artifactId>htmlunit-driver</artifactId>
             <version>2.29.0</version>
         </dependency>
+        <!--MongoDB Connector -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.10.2</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>2</finalName>
