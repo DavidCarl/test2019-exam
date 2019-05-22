@@ -66,4 +66,19 @@ public class Teacher {
                     .entity("{\"errorMessage\":\"Teacher with this email is not found!\"}").build();
         }
     }
+
+    @GET
+    @Path("/{email}")
+    public Response information(@PathParam("email") String email){
+        try{
+            String edu = repository.get(email).getEduBackground();
+            String name = repository.get(email).getName();
+
+            return Response.ok("{\"education\": \"" + edu + "\", \"name\": \"" + name + "\"}", MediaType.APPLICATION_JSON).build();
+
+        }catch (NoSuchElementException e){
+            return Response.status(404).type(MediaType.APPLICATION_JSON)
+                    .entity("{\"errorMessage\":\"Teacher with this email is not found!\"}").build();
+        }
+    }
 }
