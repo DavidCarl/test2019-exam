@@ -2,6 +2,8 @@ import backend.Course;
 import backend.Teacher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +41,6 @@ class TeacherTest {
     // Here we test the limiter on the amount of courses the teacher can have.
     @Test
     void addCourse() {
-
         Course course1 = new Course("Intro programming", teach, "101", 100);
         Course course2 = new Course("Advanced programming", teach, "102", 200);
         Course course3 = new Course("Expert programming", teach, "103", 300);
@@ -84,31 +85,28 @@ class TeacherTest {
 
     // In this section we are testing the amount of worked hours from the last semester.
     // Here we test the hours worked last semester and if they have voting rights based on that.
-    @Test
-    void setPsTeachingNegative() {
+
+    @ParameterizedTest
+    @ValueSource(ints={-10, -20})
+    void setPsTeachingNegative(int hours) {
         assertEquals(teach.getPsTeaching(), 0);
-        teach.setPsTeaching(-10);
+        teach.setPsTeaching(hours);
         assertEquals(teach.getPsTeaching(), 0);
     }
 
-    @Test
-    void voteRight19Hours(){
+    @ParameterizedTest
+    @ValueSource(ints={19, 5})
+    void voteRightNotEligible(int hours){
         assertFalse(teach.getVoteRight());
-        teach.setPsTeaching(19);
+        teach.setPsTeaching(hours);
         assertFalse(teach.getVoteRight());
     }
 
-    @Test
-    void voteRight21Hours(){
+    @ParameterizedTest
+    @ValueSource(ints={20, 21})
+    void voteRightEligible(int hours){
         assertFalse(teach.getVoteRight());
-        teach.setPsTeaching(21);
-        assertTrue(teach.getVoteRight());
-    }
-
-    @Test
-    void voteRight20Hours() {
-        assertFalse(teach.getVoteRight());
-        teach.setPsTeaching(20);
+        teach.setPsTeaching(hours);
         assertTrue(teach.getVoteRight());
     }
 
