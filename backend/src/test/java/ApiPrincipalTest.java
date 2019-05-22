@@ -222,6 +222,7 @@ public class ApiPrincipalTest {
             fail("The test URL isn't correct.");
         }
     }
+
     @Test
     public void shouldGetCourseOnRequest(){
         try {
@@ -244,8 +245,8 @@ public class ApiPrincipalTest {
                 TopicRepository.getInstance().getCourse("biology");
             });
 
-            Gson gsonBuilder = new GsonBuilder().create();
-            String expectedJson = gsonBuilder.toJson(tr.getCourse("biology"));
+
+            String expectedJson = "{\"teacher\":{\"name\":\"Lucy Bonche\"}, \"name\": \"biology\", \"roomNr\": \"2\", \"price\": \"1200\", \"students\": {} }";
 
             assertEquals(expectedJson, response.getContentAsString());
 
@@ -334,13 +335,11 @@ public class ApiPrincipalTest {
             assertAll("Check status codes",
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), topicResponse.getStatus()),
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), teacherResponse.getStatus())
-
             );
 
             assertAll("Check response body",
                     () -> assertEquals("{\"errorMessage\":\"Topic with this name is not found in the system!\"}", topicResponse.getContentAsString()),
                     () -> assertEquals("{\"errorMessage\":\"Teacher with this email is not registered in the system!\"}", teacherResponse.getContentAsString())
-
             );
 
         } catch (URISyntaxException e) {
