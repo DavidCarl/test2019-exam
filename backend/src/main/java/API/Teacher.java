@@ -71,8 +71,8 @@ public class Teacher {
     @Path("/{email}")
     public Response information(@PathParam("email") String email){
         try{
-            String edu = repository.get(email).getEduBackground();
-            String name = repository.get(email).getName();
+            String edu = teacherRepo.get(email).getEduBackground();
+            String name = teacherRepo.get(email).getName();
 
             return Response.ok("{\"education\": \"" + edu + "\", \"name\": \"" + name + "\"}", MediaType.APPLICATION_JSON).build();
 

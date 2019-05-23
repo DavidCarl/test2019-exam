@@ -184,6 +184,8 @@ public class ApiStudentTest {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
 
+            studentRepo.add(student);
+
             Teacher mockedTeacher = mock(Teacher.class);
             when(mockedTeacher.isEligible()).thenReturn(true);
 
@@ -253,6 +255,7 @@ public class ApiStudentTest {
         try {
             backend.Student student = new backend.Student("Sammy", "Smith", "30-01-2000", "smith00@gmail.com");
 
+            studentRepo.add(student);
 
             Teacher mockedTeacher = mock(Teacher.class);
             when(mockedTeacher.isEligible()).thenReturn(true);
@@ -260,7 +263,7 @@ public class ApiStudentTest {
             Topic topic = new Topic("Programming");
             topic.addCourse("Intro programming", mockedTeacher, "101", 100);
 
-
+            topicRepo.add(topic);
 
             topic.getCourse("Intro programming").enroll(student);
             studentRepo.add(student);

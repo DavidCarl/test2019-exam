@@ -44,6 +44,8 @@ public class ApiTeacherTest {
         try {
             backend.Teacher teacher = new backend.Teacher("Lenard Lyndor", "lylly@gmail.com", "Teacher edu");
 
+            teacherRepo.add(teacher);
+
             Course course1 = new Course("Intro programming", teacher, "101", 100);
             Course course2 = new Course("Advanced programming", teacher, "102", 200);
             Course course3 = new Course("Expert programming", teacher, "103", 300);
