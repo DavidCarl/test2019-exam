@@ -54,17 +54,17 @@ public class Principal {
     public Response course(@PathParam("name") String courseName) {
         try {
             Gson gsonBuilder = new GsonBuilder().create();
-            String studentsJson = gsonBuilder.toJson(topicRepository.getCourse(courseName).getCoursePayments());
-            backend.Course course = topicRepository.getCourse(courseName);
+            String studentsJson = gsonBuilder.toJson(topicRepo.getCourse(courseName).getCoursePayments());
+            backend.Course course = topicRepo.getCourse(courseName);
             String jsonString = "{\"teacher\":{\"name\":\"" + course.getTeacher().getName() + "\"},"+
                     " \"name\": \"" + course.getName() + "\","+
                     " \"roomNr\": \"" + course.getRoomNr() + "\"," +
-                    " \"price\": \"" + course.getCoursePrice() + "\"," +
+                    " \"price\": \"" + course.getPrice() + "\"," +
                     " \"students\": " + studentsJson +
                     " }";
             return Response.ok(jsonString, MediaType.APPLICATION_JSON).build();
         }catch (NoSuchElementException e){
-            return Response.status(406).entity("{\"errorMessage\":\"No course with the give name exist\"}").build();
+            return Response.status(406).entity("{\"errorMessage\":\"No course with the given name exist\"}").build();
         }
     }
 
