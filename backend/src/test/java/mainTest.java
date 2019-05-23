@@ -20,7 +20,7 @@ class mainTest {
     public void shouldGetStudentDetails(){
         Student student = main.registerStudent("Thomas", "Cook", "18-09-1987", "thcook@gmail.com");
 
-        assertAll("Test if you can getTopic backend.Student details",
+        assertAll("Test if you can get backend.Student details",
                 () -> assertEquals("Thomas", student.getFName()),
                 () -> assertEquals("Cook", student.getLName()),
                 () -> assertEquals(LocalDate.of(1987, 9, 18), student.getBirthday()),
