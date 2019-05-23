@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
-public class TopicRepository {
+public class TopicRepository implements ITopicData {
 
     HashMap<String, Topic> topics;
     private static final TopicRepository SINGLE_INSTANCE = new TopicRepository();
@@ -69,7 +69,7 @@ public class TopicRepository {
         return topics.values();
     }
 
-    public Collection<Course> getAllCourses(){
+    public Collection<Course> getAllCourses() {
         ArrayList<Course> courses = new ArrayList<Course>();
 
         for(Topic topic: topics.values()){
