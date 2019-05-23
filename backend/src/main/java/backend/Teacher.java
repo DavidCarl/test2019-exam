@@ -84,6 +84,10 @@ public class Teacher {
         this.psTeaching = psTeaching;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setEduBackground(String eduBackground) {
         this.eduBackground = eduBackground;
     }
@@ -104,10 +108,6 @@ public class Teacher {
         // exceed their maximum specifications
 
         return true;
-    }
-
-    public String getName(){
-        return name;
     }
 
     @Override

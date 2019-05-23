@@ -100,12 +100,10 @@ public class TeacherSignupTest {
         edu.selectByIndex(1);
         button.click();
 
-        try {
-            driver.switchTo().alert();
-            assertTrue(true);
-        } catch (NoAlertPresentException Ex) {
-            assertTrue(false);
-        }
+        WebElement status;
+        status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("messagediv")));
+
+        assertEquals("Please enter a name!", status.getText());
     }
 
     @Test
@@ -129,12 +127,10 @@ public class TeacherSignupTest {
         edu.selectByIndex(1);
         button.click();
 
-        try {
-            driver.switchTo().alert();
-            assertTrue(true);
-        } catch (NoAlertPresentException Ex) {
-            assertTrue(false);
-        }
+        WebElement status;
+        status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("messagediv")));
+
+        assertEquals("Please enter an email!", status.getText());
     }
 
     @Test
@@ -157,12 +153,10 @@ public class TeacherSignupTest {
         name.sendKeys("test");
         button.click();
 
-        try {
-            driver.switchTo().alert();
-            assertTrue(true);
-        } catch (NoAlertPresentException Ex) {
-            assertTrue(false);
-        }
+        WebElement status;
+        status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("messagediv")));
+
+        assertEquals("Please select a education!", status.getText());
     }
 
     @Test
