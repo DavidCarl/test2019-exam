@@ -23,6 +23,10 @@ public class ApiPrincipalTest {
     private static Dispatcher dispatcher;
     private static POJOResourceFactory noDefaults;
 
+    private ITopicData topicRepo;
+    private ITeacherData teacherRepo;
+    private IStudentData studentRepo;
+
     @BeforeEach
     public void setup() {
         dispatcher = MockDispatcherFactory.createDispatcher();
@@ -30,9 +34,13 @@ public class ApiPrincipalTest {
         noDefaults = new POJOResourceFactory(Principal.class);
         dispatcher.getRegistry().addResourceFactory(noDefaults);
 
-        TeacherRepository.getInstance().empty();
-        StudentRepository.getInstance().empty();
-        TopicRepository.getInstance().empty();
+        topicRepo = TopicRepository.getInstance();
+        teacherRepo = TeacherRepository.getInstance();
+        studentRepo = StudentRepository.getInstance();
+
+        topicRepo.empty();
+        teacherRepo.empty();
+        studentRepo.empty();
     }
 
     @Test
@@ -41,12 +49,12 @@ public class ApiPrincipalTest {
             backend.Teacher teacher1 = new backend.Teacher("Antonia Alvera", "ant87@gmail.com", "Teacher edu");
             backend.Teacher teacher2 = new backend.Teacher("John Anderson", "andr45@gmail.com", "Teacher edu");
             backend.Teacher teacher3 = new backend.Teacher("Paul Beck", "becky@gmail.com", "Teacher edu");
-            TeacherRepository.getInstance().add(teacher1);
-            TeacherRepository.getInstance().add(teacher2);
-            TeacherRepository.getInstance().add(teacher3);
+            teacherRepo.add(teacher1);
+            teacherRepo.add(teacher2);
+            teacherRepo.add(teacher3);
 
             Gson gsonBuilder = new GsonBuilder().create();
-            String teachersJson = gsonBuilder.toJson(TeacherRepository.getInstance().getAllTeachers());
+            String teachersJson = gsonBuilder.toJson(teacherRepo.getAllTeachers());
 
             MockHttpRequest request = MockHttpRequest.get("principal/teachers");
             MockHttpResponse response = new MockHttpResponse();
@@ -71,12 +79,12 @@ public class ApiPrincipalTest {
             backend.Student student2 = new backend.Student("Thomas", "Log", "15-05-2000", "logthom@gmail.com");
             backend.Student student3 = new backend.Student("George", "Smith", "03-10-1990", "georg@gmail.com");
 
-            StudentRepository.getInstance().add(student1);
-            StudentRepository.getInstance().add(student2);
-            StudentRepository.getInstance().add(student3);
+            studentRepo.add(student1);
+            studentRepo.add(student2);
+            studentRepo.add(student3);
 
             Gson gsonBuilder = new GsonBuilder().create();
-            String studentsJson = gsonBuilder.toJson(StudentRepository.getInstance().getAllStudents());
+            String studentsJson = gsonBuilder.toJson(studentRepo.getAllStudents());
 
             MockHttpRequest request = MockHttpRequest.get("principal/students");
             MockHttpResponse response = new MockHttpResponse();
@@ -102,12 +110,12 @@ public class ApiPrincipalTest {
             Topic topic2 = new Topic("Motion");
             Topic topic3 = new Topic("Science");
 
-            TopicRepository.getInstance().add(topic1);
-            TopicRepository.getInstance().add(topic2);
-            TopicRepository.getInstance().add(topic3);
+            topicRepo.add(topic1);
+            topicRepo.add(topic2);
+            topicRepo.add(topic3);
 
             Gson gsonBuilder = new GsonBuilder().create();
-            String topicsJson = gsonBuilder.toJson(TopicRepository.getInstance().getAllTopics());
+            String topicsJson = gsonBuilder.toJson(topicRepo.getAllTopics());
 
             MockHttpRequest request = MockHttpRequest.get("principal/topics");
             MockHttpResponse response = new MockHttpResponse();
@@ -131,8 +139,8 @@ public class ApiPrincipalTest {
 
             Topic topic1 = new Topic("Language");
             Topic topic2 = new Topic("Motion");
-            TopicRepository.getInstance().add(topic1);
-            TopicRepository.getInstance().add(topic2);
+            topicRepo.add(topic1);
+            topicRepo.add(topic2);
 
             Teacher mockedTeacher1 = mock(Teacher.class);
             Teacher mockedTeacher2 = mock(Teacher.class);
@@ -149,7 +157,7 @@ public class ApiPrincipalTest {
             topic2.addCourse("Running", mockedTeacher2, "335", 200);
 
             Gson gsonBuilder = new GsonBuilder().create();
-            String coursesJson = gsonBuilder.toJson(TopicRepository.getInstance().getAllCourses());
+            String coursesJson = gsonBuilder.toJson(topicRepo.getAllCourses());
 
             MockHttpRequest request = MockHttpRequest.get("principal/courses");
             MockHttpResponse response = new MockHttpResponse();
@@ -176,7 +184,7 @@ public class ApiPrincipalTest {
 
             // Check the status code
             assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-            assertTrue(TopicRepository.getInstance().getAllTopics().size() == 1);
+            assertTrue(topicRepo.getAllTopics().size() == 1);
 
         } catch (URISyntaxException e) {
             fail("The test URL isn't correct.");
@@ -188,7 +196,7 @@ public class ApiPrincipalTest {
         try {
 
             Topic topic1 = new Topic("Science");
-            TopicRepository.getInstance().add(topic1);
+            topicRepo.add(topic1);
 
             MockHttpRequest request = MockHttpRequest.post("principal/register/addTopic/Science");
             MockHttpResponse response = new MockHttpResponse();
@@ -198,7 +206,7 @@ public class ApiPrincipalTest {
 
             // Check the status code
             assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
-            assertTrue(TopicRepository.getInstance().getAllTopics().size() == 1);
+            assertTrue(topicRepo.getAllTopics().size() == 1);
             assertEquals("{\"errorMessage\":\"Topic with this name is already present in the system!\"}", response.getContentAsString());
 
         } catch (URISyntaxException e) {
@@ -259,9 +267,9 @@ public class ApiPrincipalTest {
     public void shouldRegisterNewCourseWithSuccess(){
         try {
             backend.Teacher teacher= new Teacher("Lucy Bonche", "lycy1234@gmail.com", "Teacher edu");
-            TeacherRepository.getInstance().add(teacher);
+            teacherRepo.add(teacher);
 
-            TopicRepository.getInstance().add("Sciences");
+            topicRepo.add("Sciences");
 
             MockHttpRequest request = MockHttpRequest.post("principal/register/addCourse/Biology/Sciences/342/lycy1234@gmail.com/300");
             MockHttpResponse response = new MockHttpResponse();
@@ -273,7 +281,7 @@ public class ApiPrincipalTest {
             assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
 
             assertDoesNotThrow(() -> {
-                TopicRepository.getInstance().getCourse("Biology");
+                topicRepo.getCourse("Biology");
             });
 
 
@@ -287,10 +295,10 @@ public class ApiPrincipalTest {
         try {
 
             backend.Teacher teacher= new Teacher("Bent Bonche", "bent4321@gmail.com", "Teacher edu");
-            TeacherRepository.getInstance().add(teacher);
+            teacherRepo.add(teacher);
 
             backend.Topic sciencesTopic = new Topic("Sciences");
-            TopicRepository.getInstance().add(sciencesTopic);
+            topicRepo.add(sciencesTopic);
 
             sciencesTopic.addCourse("biology", teacher, "524", 200);
 
@@ -302,7 +310,7 @@ public class ApiPrincipalTest {
 
             // Check the status code
             assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
-            assertTrue(TopicRepository.getInstance().getAllCourses().size() == 1);
+            assertTrue(topicRepo.getAllCourses().size() == 1);
             assertEquals("{\"errorMessage\":\"Course with this name is already present in the system!\"}", response.getContentAsString());
 
         } catch (URISyntaxException e) {
@@ -314,9 +322,9 @@ public class ApiPrincipalTest {
     public void shouldReturnNotFoundWithNonExistentData(){
         try{
             backend.Teacher teacher= new Teacher("Tino Sammson", "t.samson@gmail.com", "Teacher edu");
-            TeacherRepository.getInstance().add(teacher);
+            teacherRepo.add(teacher);
 
-            TopicRepository.getInstance().add("Arts");
+            topicRepo.add("Arts");
 
             // Non-existent topic
             MockHttpRequest topicRequest = MockHttpRequest.post("principal/register/addCourse/Swimming/Motion/102/t.samson@gmail.com/300");

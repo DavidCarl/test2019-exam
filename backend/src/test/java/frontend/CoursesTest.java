@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -26,7 +27,9 @@ public class CoursesTest {
     @BeforeEach
     void setup() {
         System.setProperty("webdriver.gecko.driver", "geckodriver");
-        driver = new FirefoxDriver();
+        FirefoxOptions options = new FirefoxOptions();
+        options.setHeadless(true);
+        driver = new FirefoxDriver(options);
     }
 
     @AfterEach
@@ -66,7 +69,7 @@ public class CoursesTest {
         int currentCoursesCount = courses.size();
 
         // register new course
-        apiCall("http://localhost:8080/2/api/principal/register/addCourse/Painting/Arts/300/smt@gmail.com/200", "POST");
+        apiCall("http://localhost:8080/2/api/principal/register/addCourse/" + getAlphaNumericString(5) + "/Arts/300/smt@gmail.com/200", "POST");
 
         driver.findElement(By.id("refreshBtn")).click();
         courses = wait.until(ExpectedConditions.presenceOfNestedElementsLocatedBy(By.id("listOfCourses"), By.tagName("li")));
@@ -168,5 +171,25 @@ public class CoursesTest {
         } catch (IOException e) {
         }
         return data;
+    }
+
+    public String getAlphaNumericString(int n) {
+        // chose a Character random from this String
+        String AlphaNumericString = "123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int) (AlphaNumericString.length()
+                    * Math.random());
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+        return sb.toString();
     }
 }

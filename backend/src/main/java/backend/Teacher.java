@@ -88,6 +88,10 @@ public class Teacher {
         this.psTeaching = psTeaching;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setEduBackground(String eduBackground) {
         this.eduBackground = eduBackground;
     }

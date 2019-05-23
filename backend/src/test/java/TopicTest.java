@@ -1,3 +1,4 @@
+import backend.ITopicData;
 import backend.Topic;
 import backend.TopicRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +9,7 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TopicTest {
-    TopicRepository topics;
+    ITopicData topics;
 
     @BeforeEach
         //Here the repository would be initialized before each test.
