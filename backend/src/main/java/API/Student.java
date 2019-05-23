@@ -1,8 +1,6 @@
 package API;
 
-import backend.Course;
-import backend.StudentRepository;
-import backend.TopicRepository;
+import backend.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -15,13 +13,14 @@ import java.util.NoSuchElementException;
 
 @Path("/student")
 public class Student {
-    StudentRepository repository = StudentRepository.getInstance();
+    ITopicData topicRepo = TopicRepository.getInstance();
+    IStudentData studentRepo = StudentRepository.getInstance();
 
     @POST
     @Path("/register/{firstName}/{lastName}/{birthday}/{email}")
     public Response register(@PathParam("firstName") String fName, @PathParam("lastName") String lName, @PathParam("birthday") String birthday, @PathParam("email") String email) {
 
-        if(repository.add(fName,lName,birthday, email))
+        if(studentRepo.add(fName,lName,birthday, email))
             return Response.status(201).build();
         else
             return Response.status(409).entity("{\"errorMessage\":\"Student with this email is already registered!\"}").build();
@@ -31,10 +30,10 @@ public class Student {
     @Path("/enrol/{email}/{courseName}")
     public Response enrol(@PathParam("email") String email, @PathParam("courseName") String courseName) {
         try{
-            backend.Student student = repository.get(email);
+            backend.Student student = studentRepo.get(email);
 
             try {
-                Course course = TopicRepository.getInstance().getCourse(courseName);
+                Course course = topicRepo.getCourse(courseName);
                 course.enroll(student);
 
                 return Response.status(202).build();
@@ -55,7 +54,7 @@ public class Student {
     @Path("/info/{email}")
     public Response studentInformation(@PathParam("email") String email) {
         try{
-            backend.Student student = repository.get(email);
+            backend.Student student = studentRepo.get(email);
             Gson gsonBuilder = new GsonBuilder().create();
             String coursesJson = gsonBuilder.toJson(student);
             return Response.ok(coursesJson, MediaType.APPLICATION_JSON).build();
@@ -69,7 +68,7 @@ public class Student {
     @Path("/courses/{email}")
     public Response courses(@PathParam("email") String email) {
         try {
-            HashSet<Course> courses = repository.get(email).getCourses();
+            HashSet<Course> courses = studentRepo.get(email).getCourses();
 
             Gson gsonBuilder = new GsonBuilder().create();
             String coursesJson = gsonBuilder.toJson(courses);
@@ -85,10 +84,10 @@ public class Student {
     @Path("/payment/{email}/{courseName}/{amount}")
     public Response payment(@PathParam("email") String email, @PathParam("courseName") String courseName, @PathParam("amount") int amount) {
         try{
-            backend.Student student = repository.get(email);
+            backend.Student student = studentRepo.get(email);
 
             try {
-                Course course = TopicRepository.getInstance().getCourse(courseName);
+                Course course = topicRepo.getCourse(courseName);
                 int leftover = course.acceptPayment(student, amount);
 
                 return Response.status(202)
@@ -112,7 +111,7 @@ public class Student {
     @Path("/paymentStatus/{email}")
     public Response status(@PathParam("email") String email) {
         try {
-            HashMap<String, Integer> leftoverAmounts = repository.get(email).getPaymentStatus();
+            HashMap<String, Integer> leftoverAmounts = studentRepo.get(email).getPaymentStatus();
 
             Gson gsonBuilder = new GsonBuilder().create();
             String paymentsJson = gsonBuilder.toJson(leftoverAmounts);
