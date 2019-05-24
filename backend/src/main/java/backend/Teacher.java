@@ -22,6 +22,10 @@ public class Teacher {
         return email;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -82,10 +86,6 @@ public class Teacher {
         if(psTeaching < 0)
             psTeaching = 0; //Do something else here! Its not possible to have minus hour lectures.
         this.psTeaching = psTeaching;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setEduBackground(String eduBackground) {

@@ -60,7 +60,7 @@ public class FrontTest {
     }
 
     @Test
-    void principal_overview_teacher(){
+    void overview_teacher(){
         String email = getAlphaNumericString(10) + "@teacher.com";
         String student_email = getAlphaNumericString(10) + "@student.com";
         String course = getAlphaNumericString(10);
@@ -103,7 +103,7 @@ public class FrontTest {
     }
 
     @Test
-    void principal_overview_course(){
+    void overview_course(){
         String email = getAlphaNumericString(10) + "@teacher.com";
         String student_email = getAlphaNumericString(10) + "@student.com";
         String course = getAlphaNumericString(10);
@@ -146,7 +146,7 @@ public class FrontTest {
     }
 
     @Test
-    void principal_overview_student() {
+    void overview_student() {
         String email = getAlphaNumericString(10) + "@teacher.com";
         String student_email = getAlphaNumericString(10) + "@student.com";
         String course = getAlphaNumericString(10);

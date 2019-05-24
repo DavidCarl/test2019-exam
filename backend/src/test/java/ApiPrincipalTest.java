@@ -215,6 +215,55 @@ public class ApiPrincipalTest {
     }
 
     @Test
+    public void shouldGet406onCourseRequest() {
+        try {
+            MockHttpRequest request = MockHttpRequest.get("principal/course/this_does_not_exist");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.NOT_ACCEPTABLE.getStatusCode(), response.getStatus());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
+    public void shouldGetCourseOnRequest(){
+        try {
+            backend.Teacher teacher = new Teacher("Lucy Bonche", "lycy1234@gmail.com", "Teacher edu");
+
+            TopicRepository tr = TopicRepository.getInstance();
+            tr.add("science");
+            tr.getTopic("science").addCourse("biology", teacher, "2", 1200);
+
+            MockHttpRequest request = MockHttpRequest.get("principal/course/biology");
+            MockHttpResponse response = new MockHttpResponse();
+
+            // Invoke the request
+            dispatcher.invoke(request, response);
+
+            // Check the status code
+            assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+            assertDoesNotThrow(() -> {
+                TopicRepository.getInstance().getCourse("biology");
+            });
+
+
+            String expectedJson = "{\"teacher\":{\"name\":\"Lucy Bonche\"}, \"name\": \"biology\", \"roomNr\": \"2\", \"price\": \"1200\", \"students\": {} }";
+
+            assertEquals(expectedJson, response.getContentAsString());
+
+        } catch (URISyntaxException e) {
+            fail("The test URL isn't correct.");
+        }
+    }
+
+    @Test
     public void shouldRegisterNewCourseWithSuccess(){
         try {
             backend.Teacher teacher= new Teacher("Lucy Bonche", "lycy1234@gmail.com", "Teacher edu");
@@ -294,13 +343,11 @@ public class ApiPrincipalTest {
             assertAll("Check status codes",
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), topicResponse.getStatus()),
                     () -> assertEquals(Response.Status.NOT_FOUND.getStatusCode(), teacherResponse.getStatus())
-
             );
 
             assertAll("Check response body",
                     () -> assertEquals("{\"errorMessage\":\"Topic with this name is not found in the system!\"}", topicResponse.getContentAsString()),
                     () -> assertEquals("{\"errorMessage\":\"Teacher with this email is not registered in the system!\"}", teacherResponse.getContentAsString())
-
             );
 
         } catch (URISyntaxException e) {

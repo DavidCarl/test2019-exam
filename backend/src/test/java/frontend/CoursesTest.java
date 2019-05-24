@@ -1,7 +1,5 @@
 package frontend;
 
-import backend.TeacherRepository;
-import backend.TopicRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +7,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.BufferedReader;
@@ -80,6 +77,76 @@ public class CoursesTest {
         assertTrue(currentCoursesCount < courses.size());
 
     }
+
+    @Test
+    void course_show_details() {
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        List<WebElement> courses;
+
+        // register new topic
+        apiCall("http://localhost:8080/2/api/principal/register/addTopic/Arts", "POST");
+        // register new teachers
+        apiCall("http://localhost:8080/2/api/teacher/register/Lenard%20Lyndor/lylly@gmail.com/Teacher%20edu", "POST");
+        // register new courses
+        apiCall("http://localhost:8080/2/api/principal/register/addCourse/Painting_a/Arts/102/lylly@gmail.com/500", "POST");
+
+        driver.get("http://localhost:8080/2/course");
+        courses = wait.until(ExpectedConditions.presenceOfNestedElementsLocatedBy(By.id("listOfCourses"), By.tagName("li")));
+
+        for( WebElement we: courses){
+            if(we.getText().equals("painting_a - 500")) {
+                we.click();
+            }
+        }
+
+        String teacherName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("teacherName"))).getText();
+        String courseName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("courseName"))).getText();
+
+        assertEquals("Lenard Lyndor", teacherName);
+        assertEquals("painting_a", courseName);
+    }
+
+
+    @Test
+    void course_enrol_student() {
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        List<WebElement> courses;
+
+        // register new topic
+        apiCall("http://localhost:8080/2/api/principal/register/addTopic/Arts", "POST");
+        // register new teachers
+        apiCall("http://localhost:8080/2/api/teacher/register/Lenard%20Lyndor/lylly@gmail.com/Teacher%20edu", "POST");
+        // register new courses
+        apiCall("http://localhost:8080/2/api/principal/register/addCourse/Painting_b/Arts/102/lylly@gmail.com/500", "POST");
+
+        driver.get("http://localhost:8080/2/course");
+        courses = wait.until(ExpectedConditions.presenceOfNestedElementsLocatedBy(By.id("listOfCourses"), By.tagName("li")));
+
+        for( WebElement we: courses){
+            if(we.getText().equals("painting_b - 500")) {
+                we.click();
+            }
+        }
+
+        apiCall("http://localhost:8080/2/api/student/register/Emil/Jonson/10-04-1996/emil@gmail.com", "POST");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("enrolEmail"))).sendKeys("emil@gmail.com");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("enrolBtn"))).click();
+
+        for( WebElement we: courses){
+            if(we.getText().equals("painting_b - 500")) {
+                we.click();
+            }
+        }
+
+        List<WebElement> studentEmails;
+        studentEmails = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("studentEmail")));
+
+        assertEquals("emil@gmail.com", studentEmails.get(0).getText());
+
+
+    }
+
 
     private String apiCall(String endpoint, String method) {
         String data = "";
